@@ -1,33 +1,55 @@
-README.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# 系统文件
+.DS_Store
+*~
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# IDE/编辑器缓存文件
+.idea/
 .vscode/
+*.iml
+*.iws
+out/
+build/
+
+# 编程语言&框架编译/产物文件（核心规则，屏蔽非源码文件）
+*.class
+*.jar
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# 前端项目
+node_modules/
+dist/
+
+# 文档&日志&临时文件
+*.log
+logs/
+log/
+
+# 编译/打包产物
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+
+# 强制不忽略核心文档
+!README.md
+!readme.md
+!HELP.md
+!help.md
+!CHANGELOG.md
+!LICENSE
+!.gitignore
+!.gitattributes
+
+# 强制不忽略源码目录/核心配置
+!src/
+!pom.xml
+!build.gradle
+!package.json
+!yarn.lock
+!pnpm-lock.yaml

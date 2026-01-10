@@ -22,10 +22,10 @@
 
 ### 后端项目
 
-| 项目                                                               | Star                                                                                                                                                          | 简介                     |
-|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| [travis-monolith](https://github.com/monolith0115/travis-monolith) | [![GitHub stars](https://img.shields.io/github/stars/monolith0115/travis-monolith.svg?style=social&label=Stars)](https://github.com/monolith0115/travis-monolith) | 基于 Spring Boot 多模块单体架构 |
-| [monolith-cloud](https://github.com/monolith0115/travis-monolith)    | //TODO                                                                                                                                                        | 基于 Spring Cloud 微服务架构  |
+| 项目                                                                | Star                                                                                                                                                          | 简介                     |
+|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| [travis-monolith](https://github.com/travis0115/travis-monolith)  | [![GitHub stars](https://img.shields.io/github/stars/travis0115/travis-monolith.svg?style=social&label=Stars)](https://github.com/travis0115/travis-monolith) | 基于 Spring Boot 多模块单体架构 |
+| [monolith-cloud](https://github.com/travis0115/travis-monolith) | //TODO                                                                                                                                                        | 基于 Spring Cloud 微服务架构  |
 
 ### 前端项目
 //TODO

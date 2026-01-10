@@ -3,6 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.travis</groupId>
         <artifactId>monolith</artifactId>
@@ -10,6 +11,9 @@
     </parent>
 
     <artifactId>monolith-server</artifactId>
+    <description>
+        项目启动模块，引入需要的模块 monolith-module-xxx 即可开启对应模块。
+    </description>
 
     <dependencies>
         <!-- 启动模块 -->

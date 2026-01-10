@@ -1,15 +1,15 @@
 <p style="text-align: center">
- <img src="https://img.shields.io/badge/Spring%20Boot-4.0.1-blue.svg" alt="Downloads">
- <img src="https://img.shields.io/badge/JDK-25-blue.svg" alt="Downloads">
- <img src="https://img.shields.io/badge/Vue-3-blue.svg" alt="Downloads">
- <img src="https://img.shields.io/github/license/YunaiV/ruoyi-vue-pro" alt="Downloads"/>
+ <img src="https://img.shields.io/badge/Spring%20Boot-4.0.1-blue.svg" alt="Spring Boot">
+ <img src="https://img.shields.io/badge/JDK-25-blue.svg" alt="JDK">
+ <img src="https://img.shields.io/badge/Vue-3-blue.svg" alt="Vue">
+ <img src="https://img.shields.io/github/license/YunaiV/ruoyi-vue-pro" alt="License"/>
 </p>
 
 ## 💻 项目外包
 
 独立开发者，前阿里工程师，APP/小程序/H5，「远程兼职」&「定制开发」接单中。
 
-如果你有项目想要外包，可以微信联系【**travis0115_**】
+如果你有项目想要外包，可以微信联系【<span style="color: #FF5733;">**travis0115_**</span>】
 
 ## 🐣 项目简介
 

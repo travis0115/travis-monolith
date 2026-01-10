@@ -9,6 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <description>基础依赖 bom 文件，管理整个项目的依赖版本</description>
+
     <properties>
         <!-- 项目版本 -->
         <monolith.version>0.0.1-SNAPSHOT</monolith.version>

@@ -11,6 +11,8 @@
 
     <artifactId>monolith-module-demo</artifactId>
 
+    <description>demo模块,用于测试及给AI规范参考。</description>
+
     <dependencies>
         <!-- aop -->
         <dependency>

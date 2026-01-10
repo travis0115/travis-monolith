@@ -3,6 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>travis-monolith</name>
+    <description>多模块单体架构脚手架</description>
+    <url>https://github.com/travis0115/travis-monolith</url>
+    <developers>
+        <developer>
+            <name>travis</name>
+            <email>travis0115@163.com</email>
+            <url>https://github.com/travis0115</url>
+        </developer>
+    </developers>
+
     <groupId>com.travis</groupId>
     <artifactId>monolith</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -10,6 +21,7 @@
 
     <modules>
         <module>monolith-dependencies</module>
+        <module>monolith-framework</module>
         <module>monolith-server</module>
         <module>monolith-module-demo</module>
     </modules>

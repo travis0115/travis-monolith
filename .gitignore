@@ -17,6 +17,7 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+.flattened-pom.xml
 
 # 前端项目
 node_modules/

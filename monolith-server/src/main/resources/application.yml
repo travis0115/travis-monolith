@@ -3,7 +3,7 @@ spring:
     active: dev
   config:
     import:
-#      - classpath:application-${spring.profiles.active}.yml
+  #      - classpath:application-${spring.profiles.active}.yml
   servlet:
     multipart:
       enabled: true #开启文件上传

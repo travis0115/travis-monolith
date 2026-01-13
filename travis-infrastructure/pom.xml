@@ -1,36 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>travis-monolith</name>
-    <description>多模块单体架构脚手架</description>
-    <url>https://github.com/travis0115/travis-monolith</url>
-    <developers>
-        <developer>
-            <name>travis</name>
-            <email>travis0115@163.com</email>
-            <url>https://github.com/travis0115</url>
-        </developer>
-    </developers>
-
     <groupId>com.travis</groupId>
-    <artifactId>monolith</artifactId>
+    <artifactId>travis-infrastructure</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
+    <description>
+        该模块是跨项目复用的基建模块，可单独发布至仓库提供复用
+    </description>
+
     <modules>
-        <module>travis-infrastructure</module>
-        <module>monolith-dependencies</module>
-        <module>monolith-module-demo</module>
-        <module>monolith-server</module>
+        <module>travis-dependencies</module>
+        <module>travis-framework</module>
     </modules>
 
     <properties>
         <!-- 项目版本 -->
         <revision>1.0.0</revision>
-        <!-- 依赖版本模块、自定义框架模块等跨项目复用模块版本 -->
-        <travis-infrastructure.version>1.0.0</travis-infrastructure.version>
         <!-- Maven 相关 -->
         <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -44,13 +34,6 @@
             <dependency>
                 <groupId>com.travis</groupId>
                 <artifactId>travis-dependencies</artifactId>
-                <version>${travis-infrastructure.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.travis</groupId>
-                <artifactId>monolith-dependencies</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -71,23 +54,23 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>flatten</goal>
                         </goals>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
                     </execution>
                     <execution>
+                        <id>flatten.clean</id>
                         <goals>
                             <goal>clean</goal>
                         </goals>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
 
     <!-- 使用华为云、阿里云 maven 中央仓库，提升依赖下载速度 -->
     <repositories>

@@ -41,17 +41,20 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.travis</groupId>
-                <artifactId>travis-dependencies</artifactId>
-                <version>${travis-infrastructure.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <!-- 项目依赖 -->
             <dependency>
                 <groupId>com.travis</groupId>
                 <artifactId>monolith-dependencies</artifactId>
                 <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 跨项目依赖 -->
+            <dependency>
+                <groupId>com.travis</groupId>
+                <artifactId>travis-dependencies</artifactId>
+                <version>${travis-infrastructure.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

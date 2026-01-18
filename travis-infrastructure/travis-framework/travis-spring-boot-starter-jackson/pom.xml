@@ -9,26 +9,19 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>travis-spring-boot-starter-redis</artifactId>
+    <artifactId>travis-spring-boot-starter-jackson</artifactId>
 
-    <description>Redis 封装拓展</description>
+    <description>Jackson3 封装拓展</description>
 
     <dependencies>
         <dependency>
             <groupId>com.travis</groupId>
             <artifactId>travis-spring-boot-starter-base</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.travis</groupId>
-            <artifactId>travis-spring-boot-starter-jackson</artifactId>
-        </dependency>
+        <!-- Jackson3 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
         </dependency>
     </dependencies>
 

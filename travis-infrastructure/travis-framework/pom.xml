@@ -22,7 +22,8 @@
     </description>
 
     <modules>
-        <module>travis-framework-base</module>
+        <module>travis-spring-boot-starter-base</module>
+        <module>travis-spring-boot-starter-jackson</module>
         <module>travis-spring-boot-starter-redis</module>
     </modules>
 

@@ -16,9 +16,18 @@ spring:
     use-code-as-default-message: true
   data:
     redis:
-      database: 0
       host: 127.0.0.1
       port: 6379
+  #      redisson:
+  #        config: classpath:redisson.yml
+  jackson:
+    time-zone: Asia/Shanghai
+    locale: zh-CN
+    date-format: yyyy-MM-dd HH:mm:ss
+    deserialization:
+      fail_on_unknown_properties: true  #若存在无法匹配的属性抛出异常
+
+
   datasource:
     #druid连接池配置
     druid:
@@ -65,6 +74,7 @@ jasypt:
   encryptor:
     password: m6PJ96LvJ10ht6TF
     algorithm: PBEWITHHMACSHA512ANDAES_256
+
 
 application:
   zone-id: Asia/Shanghai

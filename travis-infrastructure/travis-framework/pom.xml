@@ -8,8 +8,8 @@
         <artifactId>travis-infrastructure</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>travis-framework</artifactId>
     <packaging>pom</packaging>
+    <artifactId>travis-framework</artifactId>
 
     <description>
         该模块是框架组件，每个子模块，代表一个组件。

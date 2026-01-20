@@ -8,7 +8,7 @@
         <artifactId>travis-framework</artifactId>
         <version>${revision}</version>
     </parent>
-
+    <packaging>pom</packaging>
     <artifactId>travis-spring-boot-starter-base</artifactId>
 
     <description>构建自定义starter的通用依赖</description>
@@ -21,18 +21,31 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- springboot 自动装配 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- 用于生成自定义的 Spring @ConfigurationProperties 配置类的说明文件 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- hutool -->
@@ -40,23 +53,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <!-- mapstruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-        </dependency>
-
 
     </dependencies>
 

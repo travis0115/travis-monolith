@@ -29,6 +29,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- devtools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,25 +43,12 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- mysql -->
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- docker compose -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-
-        <!-- actuator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

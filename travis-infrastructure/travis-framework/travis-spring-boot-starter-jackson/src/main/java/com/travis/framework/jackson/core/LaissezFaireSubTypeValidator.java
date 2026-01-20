@@ -6,6 +6,7 @@ import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 /**
  * 全局放行的校验器
+ * 仅在缓存来源可信时使用，否则请自定义校验器或使用默认的{@link PolymorphicTypeValidator}
  *
  * @author travis
  */

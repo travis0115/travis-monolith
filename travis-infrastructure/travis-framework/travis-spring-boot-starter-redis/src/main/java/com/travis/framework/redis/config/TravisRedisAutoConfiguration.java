@@ -1,9 +1,9 @@
-package com.travis.framework.jackson.config;
+package com.travis.framework.redis.config;
 
-import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
@@ -16,7 +16,7 @@ import tools.jackson.databind.ObjectMapper;
  *
  * @author travis
  */
-@AutoConfiguration(before = RedissonAutoConfiguration.class)
+@AutoConfiguration
 public class TravisRedisAutoConfiguration {
 
     private final ObjectMapper objectMapper;
@@ -31,6 +31,7 @@ public class TravisRedisAutoConfiguration {
      * 创建 RedisTemplate Bean，使用 JSON 序列化方式
      */
     @Bean
+    @Primary
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         // 创建 RedisTemplate 对象
         var template = new RedisTemplate<String, Object>();
@@ -39,11 +40,11 @@ public class TravisRedisAutoConfiguration {
         var stringRedisSerializer = RedisSerializer.string();
         var jsonRedisSerializer = new GenericJacksonJsonRedisSerializer(objectMapper);
 
-        // 使用 String 序列化 KEY 。
+        // 使用 String 序列化 KEY
         template.setKeySerializer(stringRedisSerializer);
         template.setHashKeySerializer(stringRedisSerializer);
 
-        // 使用 JSON 序列化 VALUE 。
+        // 使用 JSON 序列化 VALUE
         template.setValueSerializer(jsonRedisSerializer);
         template.setHashValueSerializer(jsonRedisSerializer);
         template.afterPropertiesSet();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="fileHome" value="D:/logs/8080"/>
+    <property name="fileHome" value="./logs"/>
     <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引,%m：日志消息，%n是换行符-->
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${fileHome}/error.log</File>
@@ -40,7 +40,7 @@
     <root level="INFO">
         <appender-ref ref="console"/>
     </root>
-    <logger level="INFO" name="com.toby.microdeal.api.aspect.RequestLogAspect" additivity="false">
+    <logger level="INFO" name="com.toby.travis.api.aspect.RequestLogAspect" additivity="false">
         <appender-ref ref="request"/>
     </logger>
     <root level="ERROR">

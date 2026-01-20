@@ -11,7 +11,7 @@
 
     <artifactId>travis-spring-boot-starter-redis</artifactId>
 
-    <description>Redis 封装拓展</description>
+    <description>Redis 拓展封装</description>
 
     <dependencies>
         <dependency>

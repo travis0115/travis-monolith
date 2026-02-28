@@ -15,8 +15,9 @@
         <!-- 项目版本 -->
         <revision>1.0.0</revision>
         <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
-        <!-- spring -->
-        <spring-boot.version>4.0.1</spring-boot.version>
+
+        <!-- Spring -->
+        <spring-boot.version>4.0.2</spring-boot.version>
         <spring-modulith.version>2.0.1</spring-modulith.version>
         <spring-aop.version>4.0.0-M2</spring-aop.version>
 
@@ -29,12 +30,20 @@
         <!-- 缓存 -->
         <redisson.version>4.1.0</redisson.version>
 
-        <!-- 其他 -->
-        <jwt.version>4.5.0</jwt.version>
-        <mapstruct.version>1.6.3</mapstruct.version>
-        <swagger.version>3.0.0</swagger.version>
-        <fastjson.version>2.0.60</fastjson.version>
+        <!-- 日志 -->
+        <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
+
+        <!-- 网络 -->
         <okhttp.version>5.3.2</okhttp.version>
+
+        <!-- 安全 -->
+        <jwt.version>4.5.0</jwt.version>
+
+        <!-- 文档 -->
+        <swagger.version>3.0.0</swagger.version>
+
+        <!-- 工具 -->
+        <mapstruct.version>1.6.3</mapstruct.version>
         <hutool.version>5.8.43</hutool.version>
     </properties>
 
@@ -48,12 +57,28 @@
             </dependency>
             <dependency>
                 <groupId>com.travis</groupId>
+                <artifactId>travis-spring-boot-starter-logging</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.travis</groupId>
                 <artifactId>travis-spring-boot-starter-jackson</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.travis</groupId>
                 <artifactId>travis-spring-boot-starter-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.travis</groupId>
+                <artifactId>travis-spring-boot-starter-webmvc</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.travis</groupId>
+                <artifactId>travis-common</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -157,20 +182,18 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
+            <!-- logstash -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <!-- SpringBoot -->
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-dependencies</artifactId>
-                    <version>${spring-boot.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <!-- 统一 revision 版本 -->
             <plugin>

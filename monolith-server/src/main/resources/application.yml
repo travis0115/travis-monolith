@@ -1,35 +1,28 @@
+server:
+  port: 8080
 spring:
   profiles:
     active: dev
-  config:
-    import:
-  #      - classpath:application-${spring.profiles.active}.yml
+  #    active: prod
+  application:
+    name: travis-monolith
   cache:
     type: redis
-
-  servlet:
-    multipart:
-      enabled: true #开启文件上传
-      max-file-size: 20MB #限制文件上传大小为20M
-  docker:
-    compose:
-      enabled: false
-  messages:
-    basename: i18n/messages
-    use-code-as-default-message: true
+  #  config:
+  #    import:
+  #      - classpath:travis-xx.yml
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
-      repositories:
-        enabled: false  #项目未使用到 Spring Data Redis 的 Repository，所以直接禁用，保证启动速度
-  jackson:
-    time-zone: Asia/Shanghai
-    locale: zh-CN
-    date-format: yyyy-MM-dd HH:mm:ss
-    deserialization:
-      fail_on_unknown_properties: true  #若存在无法匹配的属性抛出异常
-
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      database: ${REDIS_DATABASE:0}
+      client-name: ${spring.application.name}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 2000  #最大连接数
+          max-idle: 20  #最大空闲连接数
+          min-idle: 5 #最小空闲连接数
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource  #指定使用Druid连接池
@@ -54,8 +47,8 @@ spring:
         url-pattern: "/druid/*" #监控页面访问路径
         allow: 127.0.0.1  #允许访问的IP（默认所有IP）
         deny: #禁止访问的IP
-        login-username: travis0115  #监控页面用户名
-        login-password: yatuier95.  #监控页面密码
+        login-username: ${DRUID_USERNAME:admin}  #监控页面用户名
+        login-password: ${DRUID_PASSWORD:admin123456}  #监控页面密码
         reset-enable: true  #是否可以重置
 
       #SQL监控与防注入配置
@@ -74,28 +67,57 @@ spring:
         url-pattern: "/*"
         exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
 
+  docker:
+    compose:
+      enabled: false
+  jackson:
+    locale: ${travis.application.web.locale:zh_CN}
+    time-zone: ${travis.application.web.time-zone:UTC}
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      indent-output: true #格式化输出
+    deserialization:
+      fail_on_unknown_properties: false  #若存在无法匹配的属性抛出异常
+  jmx:
+    enabled: false
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false  #是否使用系统区域信息
+    use-code-as-default-message: false #使用消息代码作为默认消息而不是抛出“NoSuchMessageException”,仅在开发期间推荐
+
+  servlet:
+    multipart:
+      enabled: true #开启文件上传
+      max-file-size: 20MB #限制文件上传大小为20M
+  threads:
+    virtual:
+      enabled: true
+  web:
+    #    cors:
+    #      exposed-headers:
+    #        -Custom-Header  #自定义请求头
+    locale: ${travis.application.web.locale:zh_CN}
+
+# Actuator 监控端点的配置项
+management:
+  #  endpoints:
+  #    web:
+  #      exposure:
+  #        include: "*"  # 通过 HTTP 暴露所有 Actuator 端点（默认只开放 health 和 info）,生产环境不建议全部开放，建议按需开启
+  otlp:
+    metrics:
+      export:
+        enabled: false  # 是否启用 OTLP（OpenTelemetry Protocol）指标导出，false 表示不向外部观测系统（如 SkyWalking / Prometheus OTLP / Tempo 等）上报指标，如果后续接入 OpenTelemetry Collector 或可观测平台，可改为 true 并配置 endpoint
+
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml #在classpath前添加星号可以使项目热加载成功
-  global-config:
-    banner: false #控制台是否打印banner
-    db-config:
-      logic-delete-field: del_flag
-      logic-delete-value: 1 #逻辑已删除值
-      logic-not-delete-value: 0 #逻辑未删除值
-      id-type: assign_id  #全局默认主键类型
 
-
-application:
-  zone-id: Asia/Shanghai
-  #线程池
-  thread-pool:
-    #名为taskExecutor的线程池
-    task-executor:
-      #核心线程数
-      core-pool-size: 50
-      #最大线程数
-      max-pool-size: 5000
-      #队列容量
-      queue-capacity: 5000
-      #线程活跃时间（秒）
-      keep-alive-seconds: 60
+#################### Travis 相关配置 ####################
+travis:
+  application:
+    base-package: com.travis.monolith
+    web:
+      i18n:
+        enabled: true #是否启用国际化
+      locale: zh_CN #spring.web.locale和spring.jackson.locale配置，同时作为com.travis.infrastructure.framework.web.core.utils.I18nUtil工具类的默认区域，未配置会出现某些细节异常，见工具类说明
+      time-zone: UTC  #全局time-zone配置，影响spring.jackson.time-zone以及日志配置

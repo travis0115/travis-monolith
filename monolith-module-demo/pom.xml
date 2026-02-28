@@ -11,17 +11,24 @@
 
     <artifactId>monolith-module-demo</artifactId>
 
-    <description>demo模块,用于测试及给AI规范参考。</description>
+    <description>
+        Demo模块,用于测试及给AI规范参考。
+            1. 示范 Webmvc 模块
+            2. 启用 i18n
+    </description>
 
     <dependencies>
         <dependency>
             <groupId>com.travis</groupId>
+            <artifactId>travis-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.travis</groupId>
             <artifactId>travis-spring-boot-starter-redis</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
+            <groupId>com.travis</groupId>
+            <artifactId>travis-spring-boot-starter-webmvc</artifactId>
         </dependency>
 
         <!-- mysql -->

@@ -22,9 +22,11 @@
     </description>
 
     <modules>
-        <module>travis-spring-boot-starter-base</module>
+        <module>travis-spring-boot-starter-logging</module>
         <module>travis-spring-boot-starter-jackson</module>
         <module>travis-spring-boot-starter-redis</module>
+        <module>travis-spring-boot-starter-security</module>
+        <module>travis-spring-boot-starter-webmvc</module>
     </modules>
 
 

@@ -11,13 +11,9 @@
 
     <artifactId>travis-spring-boot-starter-redis</artifactId>
 
-    <description>Redis 拓展封装</description>
+    <description>Redis、Cache 配置封装</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.travis</groupId>
-            <artifactId>travis-spring-boot-starter-base</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.travis</groupId>
             <artifactId>travis-spring-boot-starter-jackson</artifactId>

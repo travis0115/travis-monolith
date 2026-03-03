@@ -1,6 +1,5 @@
 package com.travis.infrastructure.framework.logging.core.util;
 
-import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import org.slf4j.Logger;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
@@ -21,16 +20,10 @@ public class DevLoggerUtil {
 
     /**
      * JSON 序列化器，启用缩进输出
-     * 懒加载，避免类加载时依赖 JsonUtils 导致初始化顺序问题
      */
-    private static ObjectMapper getMapper() {
-        return MapperHolder.INSTANCE;
-    }
+    private static final ObjectMapper MAPPER = new ObjectMapper().rebuild()
+            .enable(SerializationFeature.INDENT_OUTPUT).build();
 
-    private static final class MapperHolder {
-        public static final ObjectMapper INSTANCE = JsonUtils.getObjectMapper().rebuild()
-                .enable(SerializationFeature.INDENT_OUTPUT).build();
-    }
 
     /**
      * 总输出宽度（字符数）
@@ -130,7 +123,7 @@ public class DevLoggerUtil {
         try {
             String json;
             if (value instanceof Map || value instanceof Collection) {
-                json = getMapper().writeValueAsString(value).trim();
+                json = MAPPER.writeValueAsString(value).trim();
             } else {
                 json = String.valueOf(value).trim();
             }
@@ -142,7 +135,7 @@ public class DevLoggerUtil {
                     return Arrays.asList(json.split("\n"));
                 }
                 return Arrays.asList(
-                        getMapper().readTree(json.trim())
+                        MAPPER.readTree(json.trim())
                                 .toPrettyString()
                                 .split("\n"));
             }

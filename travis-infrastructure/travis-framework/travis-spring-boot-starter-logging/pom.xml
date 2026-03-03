@@ -19,14 +19,6 @@
             <artifactId>travis-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.travis</groupId>
-            <artifactId>travis-spring-boot-starter-desensitize</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.travis</groupId>
-            <artifactId>travis-spring-boot-starter-jackson</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>

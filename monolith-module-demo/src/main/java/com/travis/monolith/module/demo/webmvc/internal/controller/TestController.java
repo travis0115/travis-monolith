@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @RestController
 @Slf4j
 public class TestController {
@@ -34,6 +36,7 @@ public class TestController {
         desensitizeDemo.setRegex("你好，我是芋道源码");
         desensitizeDemo.setOrigin("芋道源码");
 
+        log.error("message", kv("demo", desensitizeDemo));
         return ApiResponse.success(desensitizeDemo);
     }
 

@@ -41,7 +41,7 @@ public class DesensitizeUtils {
             try {
                 s = SpringUtil.getBean(DesensitizeObjectSerializer.class);
             } catch (Throwable t) {
-                log.error("未获取到 DesensitizeObjectSerializer", t);
+                log.warn("未获取到 DesensitizeObjectSerializer", t);
             }
             objectSerializer = s;
             return s;

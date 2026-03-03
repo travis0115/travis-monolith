@@ -1,9 +1,8 @@
 package com.travis.infrastructure.framework.web.config;
 
-import com.travis.infrastructure.common.constant.CustomHttpHeaders;
-import com.travis.infrastructure.common.constant.WebFilterOrders;
+import com.travis.infrastructure.common.web.constant.CustomHttpHeaders;
+import com.travis.infrastructure.common.web.constant.WebFilterOrders;
 import com.travis.infrastructure.framework.web.core.exception.advice.CommonExceptionHandlerAdvice;
-import com.travis.infrastructure.framework.web.core.filter.AccessLogFilter;
 import com.travis.infrastructure.framework.web.core.filter.RequestContextFilter;
 import com.travis.infrastructure.framework.web.core.filter.RequestIdFilter;
 import com.travis.infrastructure.framework.web.core.service.I18nService;
@@ -62,15 +61,6 @@ public class TravisWebMvcAutoConfiguration implements WebMvcConfigurer {
             "handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
         return createFilterBean(new RequestContextFilter(handlerExceptionResolver),
                 WebFilterOrders.REQUEST_CONTEXT_FILTER);
-    }
-
-    /**
-     * 配置 Access Log 过滤器
-     */
-    @Bean
-    public FilterRegistrationBean<AccessLogFilter> accessLogFilter(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
-        return createFilterBean(new AccessLogFilter(handlerExceptionResolver),
-                WebFilterOrders.ACCESS_LOG_FILTER);
     }
 
     /**

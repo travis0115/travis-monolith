@@ -23,11 +23,7 @@
                 </pattern>
                 <threadName/>
                 <loggerName/>
-                <mdc>
-                    <!-- ********************* 应用 ********************* -->
-                    <!-- 日志类型 {@link com.travis.infrastructure.common.enums.LogType} -->
-                    <includeMdcKeyName>log_type</includeMdcKeyName>
-
+                <mdc class="com.travis.infrastructure.framework.logging.core.logback.provider.DesensitizeMdcJsonProvider">
                     <!-- ********************* 链路 ********************* -->
                     <!-- 请求链路ID -->
                     <includeMdcKeyName>traceId</includeMdcKeyName>
@@ -36,20 +32,14 @@
                     <!-- 请求ID -->
                     <includeMdcKeyName>request_id</includeMdcKeyName>
 
-                    <!-- ******************* 环境 & 服务 ****************** -->
-                    <!-- 服务名称 -->
-                    <includeMdcKeyName>service</includeMdcKeyName>
-                    <!-- 服务实例 -->
-                    <includeMdcKeyName>service_instance</includeMdcKeyName>
-
                     <!-- ******************* 用户 & 租户 ****************** -->
                     <!-- 租户ID -->
                     <includeMdcKeyName>tenant_id</includeMdcKeyName>
                     <!-- 用户ID -->
                     <includeMdcKeyName>user_id</includeMdcKeyName>
                 </mdc>
-                <arguments/>
                 <message/>
+                <arguments class="com.travis.infrastructure.framework.logging.core.logback.provider.DesensitizeArgumentsJsonProvider"/>
                 <stackTrace/>
             </providers>
         </encoder>

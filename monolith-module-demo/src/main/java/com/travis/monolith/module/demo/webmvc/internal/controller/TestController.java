@@ -1,14 +1,14 @@
 package com.travis.monolith.module.demo.webmvc.internal.controller;
 
 
-import com.travis.infrastructure.framework.jackson.core.JsonUtils;
 import com.travis.infrastructure.framework.web.core.model.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
 @Slf4j
@@ -19,10 +19,10 @@ public class TestController {
         this.redisTemplate = redisTemplate;
     }
 
-    @GetMapping("/test")
-    public ApiResponse<?> test(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/test")
+    public ApiResponse<?> test(@RequestBody DesensitizeDemo desensitizeDemo) {
         // 准备参数
-        var desensitizeDemo = new DesensitizeDemo();
+        desensitizeDemo = new DesensitizeDemo();
         desensitizeDemo.setNickname("芋道源码");
         desensitizeDemo.setBankCard("9988002866797031");
         desensitizeDemo.setCarLicense("粤A66666");
@@ -37,10 +37,7 @@ public class TestController {
         desensitizeDemo.setRegex("你好，我是芋道源码");
         desensitizeDemo.setOrigin("芋道源码");
 
-        // 调用
-        DesensitizeDemo d = JsonUtils.parseObject(JsonUtils.toJsonString(desensitizeDemo), DesensitizeDemo.class);
-
-
+        log.error("测试参数:{}",  desensitizeDemo,"test", kv("demo", desensitizeDemo));
         return ApiResponse.success(desensitizeDemo);
     }
 

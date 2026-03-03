@@ -17,10 +17,12 @@ import cn.hutool.core.net.multipart.MultipartFormData;
 import cn.hutool.core.net.multipart.UploadSetting;
 import cn.hutool.core.util.*;
 import cn.hutool.json.JSONUtil;
+import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -725,4 +728,58 @@ public class ServletUtils {
     }
 
 
+    /**
+     * 从 ContentCachingRequestWrapper 中读取已缓存的 body。
+     * RequestContextFilter 已经在请求入口处用 ContentCachingRequestWrapper 包装了 request，
+     * Spring MVC 读取 body 后内容缓存在 wrapper 中，通过 getContentAsByteArray() 可重复读取。
+     */
+    public static String getCachedJsonBody(HttpServletRequest request) {
+        if (!isJsonRequest(request)) {
+            return null;
+        }
+        var wrapper = findCachingWrapper(request);
+        if (wrapper == null) {
+            return null;
+        }
+        byte[] content = wrapper.getContentAsByteArray();
+        if (content.length == 0) {
+            // 没有 @RequestBody 时 Spring MVC 不会读 body，缓存为空
+            // 手动消费流，触发 ContentCachingInputStream 缓存
+            try {
+                wrapper.getInputStream().readAllBytes();
+                content = wrapper.getContentAsByteArray();
+            } catch (IOException ignored) {
+            }
+        }
+        if (content.length == 0) {
+            return null;
+        }
+        var encoding = wrapper.getCharacterEncoding();
+        var body = new String(content, Charset.forName(encoding));
+        // 去除前端传入的格式化空白（换行、缩进），压缩为单行 JSON
+        return compactJson(body);
+    }
+
+    private static String compactJson(String json) {
+        try {
+            Object obj = JsonUtils.parseObject(json, Object.class);
+            return obj != null ? JsonUtils.toJsonString(obj) : json;
+        } catch (Exception e) {
+            return json;
+        }
+    }
+
+    /**
+     * 沿 wrapper 链向内查找 ContentCachingRequestWrapper
+     */
+    private static ContentCachingRequestWrapper findCachingWrapper(HttpServletRequest request) {
+        var current = request;
+        while (current instanceof HttpServletRequestWrapper wrapper) {
+            if (current instanceof ContentCachingRequestWrapper ccw) {
+                return ccw;
+            }
+            current = (HttpServletRequest) wrapper.getRequest();
+        }
+        return null;
+    }
 }

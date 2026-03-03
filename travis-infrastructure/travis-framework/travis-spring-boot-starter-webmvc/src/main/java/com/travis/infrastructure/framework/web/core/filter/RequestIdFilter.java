@@ -1,8 +1,8 @@
 package com.travis.infrastructure.framework.web.core.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.travis.infrastructure.common.constant.CustomHttpHeaders;
-import com.travis.infrastructure.common.constant.MdcKeys;
+import com.travis.infrastructure.common.web.constant.CustomHttpHeaders;
+import com.travis.infrastructure.common.web.constant.MdcKeys;
 import com.travis.infrastructure.framework.web.core.http.MutableHttpServletRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

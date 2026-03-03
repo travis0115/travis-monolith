@@ -52,7 +52,7 @@
             <!-- 拓展starter -->
             <dependency>
                 <groupId>com.travis</groupId>
-                <artifactId>travis-spring-boot-starter-base</artifactId>
+                <artifactId>travis-spring-boot-starter-desensitize</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -68,6 +68,11 @@
             <dependency>
                 <groupId>com.travis</groupId>
                 <artifactId>travis-spring-boot-starter-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.travis</groupId>
+                <artifactId>travis-spring-boot-starter-security</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

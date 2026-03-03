@@ -3,26 +3,37 @@ package com.travis.infrastructure.framework.web.core.filter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.travis.infrastructure.common.constant.CustomHttpHeaders;
-import com.travis.infrastructure.common.constant.LogKeys;
-import com.travis.infrastructure.common.constant.MdcKeys;
-import com.travis.infrastructure.common.enums.ClientType;
-import com.travis.infrastructure.common.enums.LogType;
-import com.travis.infrastructure.framework.logging.core.enums.AccessLogger;
+import com.travis.infrastructure.common.web.constant.CustomHttpHeaders;
+import com.travis.infrastructure.common.web.constant.MdcKeys;
+import com.travis.infrastructure.common.web.enums.ClientType;
+import com.travis.infrastructure.framework.desensitize.core.resolver.DesensitizeResolver;
+import com.travis.infrastructure.framework.desensitize.core.rule.DesensitizeRule;
+import com.travis.infrastructure.framework.jackson.core.desensitize.util.DesensitizeUtils;
+import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
+import com.travis.infrastructure.framework.logging.core.constant.LogKeys;
+import com.travis.infrastructure.framework.logging.core.enums.LogType;
+import com.travis.infrastructure.framework.logging.core.util.DevLoggerUtil;
+import com.travis.infrastructure.framework.web.core.enums.AccessLogger;
 import com.travis.infrastructure.framework.web.core.utils.ServletUtils;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.argument.StructuredArgument;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.MethodParameter;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -33,20 +44,21 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class AccessLogFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
-    private final boolean enabledAccessLog = Boolean.parseBoolean(SpringUtil.getProperty("logging.access.enabled",
-            "true"));
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final boolean enabledAccessLog = Boolean.parseBoolean(
+            SpringUtil.getProperty("logging.access.enabled", "true"));
     private final String accessLogOutput = SpringUtil.getProperty("logging.output", AccessLogger.STDOUT.name());
 
-
-    public AccessLogFilter(HandlerExceptionResolver handlerExceptionResolver) {
+    public AccessLogFilter(HandlerExceptionResolver handlerExceptionResolver,
+                           RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.handlerExceptionResolver = handlerExceptionResolver;
+        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
-
+                                    @NonNull FilterChain filterChain) {
         var beginTime = System.currentTimeMillis();
         try {
             filterChain.doFilter(request, response);
@@ -57,11 +69,14 @@ public class AccessLogFilter extends OncePerRequestFilter {
         }
     }
 
-    private void outputAccessLog(HttpServletRequest request, HttpServletResponse response, long beginTime) throws IOException {
+    private void outputAccessLog(HttpServletRequest request, HttpServletResponse response,
+                                 long beginTime) {
         if (!enabledAccessLog) {
             return;
         }
         try {
+            var handlerMethod = resolveHandlerMethod(request);
+
             var logType = LogType.ACCESS.name();
             var tenantId = request.getHeader(CustomHttpHeaders.TENANT_ID);
             var userId = request.getHeader(CustomHttpHeaders.USER_ID);
@@ -71,10 +86,8 @@ public class AccessLogFilter extends OncePerRequestFilter {
             var userAgent = ServletUtils.getUserAgent();
             var clientType = ClientType.from(request.getHeader(CustomHttpHeaders.CLIENT_TYPE));
             var apiCost = (System.currentTimeMillis() - beginTime) + " ms";
-            var requestParams = ServletUtils.getParamMap(request);
-            var requestBody = ServletUtils.getJsonBody(request);
-            requestBody = StrUtil.blankToDefault(requestBody, "{}");
-            //TODO 日志数据脱敏
+            var requestParams = desensitizeParams(request, handlerMethod);
+            var requestBody = desensitizeBody(request, handlerMethod);
 
             var argumentsJson = new JSONObject();
             argumentsJson.set(MdcKeys.TENANT_ID, tenantId);
@@ -89,15 +102,16 @@ public class AccessLogFilter extends OncePerRequestFilter {
             argumentsJson.set(LogKeys.REQUEST_PARAMS, requestParams);
             argumentsJson.set(LogKeys.REQUEST_BODY, requestBody);
 
+            //TODO 记录返回值
+
             if ("dev".equalsIgnoreCase(SpringUtil.getActiveProfile())) {
                 var logger = LoggerFactory.getLogger(this.getClass());
-                logger.info(argumentsJson.toString());
+                DevLoggerUtil.print(logger, "ACCESS LOG", argumentsJson);
             }
             if ("prod".equalsIgnoreCase(SpringUtil.getActiveProfile())) {
                 var argumentsList = new ArrayList<StructuredArgument>();
-                argumentsJson.forEach(argument -> {
-                    argumentsList.add(kv(argument.getKey(), argument.getValue()));
-                });
+                argumentsJson.forEach(argument ->
+                        argumentsList.add(kv(argument.getKey(), argument.getValue())));
                 var logger = LoggerFactory.getLogger(AccessLogger.from(accessLogOutput).getLoggerName());
                 logger.info(LogType.ACCESS.name(), argumentsList.toArray());
             }
@@ -105,4 +119,131 @@ public class AccessLogFilter extends OncePerRequestFilter {
             log.error("Access log error", e);
         }
     }
+
+    /**
+     * 优先从 DispatcherServlet 已设置的请求属性中获取 HandlerMethod，
+     * 避免二次路由匹配；若不存在则回退到 HandlerMapping 重新解析。
+     */
+    private HandlerMethod resolveHandlerMethod(HttpServletRequest request) {
+        var handler = request.getAttribute(HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE);
+        if (handler instanceof HandlerMethod hm) {
+            return hm;
+        }
+        try {
+            var chain = requestMappingHandlerMapping.getHandler(request);
+            if (chain != null && chain.getHandler() instanceof HandlerMethod hm) {
+                return hm;
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+
+    /**
+     * 找到 Controller 方法的 @RequestBody 参数类型，
+     * 将原始 JSON 反序列化为该类型后重新序列化，Jackson 的 StringDesensitizeSerializer 自动处理脱敏注解。
+     */
+    private String desensitizeBody(HttpServletRequest request, HandlerMethod handlerMethod) {
+        var rawBody = ServletUtils.getCachedJsonBody(request);
+        if (StrUtil.isBlank(rawBody)) {
+            return "{}";
+        }
+
+        if (handlerMethod == null) {
+            return rawBody;
+        }
+
+        // 有 @RequestBody 参数：反序列化后重序列化，触发脱敏
+        try {
+            for (var param : handlerMethod.getMethodParameters()) {
+                if (param.hasParameterAnnotation(RequestBody.class)) {
+                    var genericType = param.getGenericParameterType();
+                    var obj = JsonUtils.parseObject(rawBody, genericType);
+                    if (obj != null) {
+                        return JsonUtils.toJsonString(obj);
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Access log body 脱敏失败", e);
+        }
+
+        // 没有 @RequestBody 或脱敏失败：原样记录 body（有数据就记，别吞掉）
+        return rawBody;
+    }
+
+    // ==================== RequestParams 脱敏 ====================
+
+    /**
+     * 对请求参数进行脱敏，支持两种场景：
+     * 1. 散参数：@RequestParam String mobile — 检查方法参数上的脱敏注解
+     * 2. DTO 参数：UserQueryDTO dto — 扫描 DTO 类字段上的脱敏注解，按字段名匹配参数
+     */
+    private Map<String, String> desensitizeParams(HttpServletRequest request, HandlerMethod handlerMethod) {
+        var rawParams = ServletUtils.getParamMap(request);
+        if (rawParams.isEmpty() || handlerMethod == null) {
+            return rawParams;
+        }
+        try {
+            var result = new LinkedHashMap<>(rawParams);
+
+            for (var param : handlerMethod.getMethodParameters()) {
+                var paramType = param.getParameterType();
+
+                if (BeanUtils.isSimpleValueType(paramType)) {
+                    desensitizeSimpleParam(param, result);
+                } else if (isUserDefinedType(paramType)) {
+                    desensitizeDtoParams(paramType, result);
+                }
+            }
+
+            return result;
+        } catch (Exception e) {
+            log.warn("Access log params 脱敏失败", e);
+            return rawParams;
+        }
+    }
+
+    /**
+     * 散参数脱敏：检查方法参数上直接标注的脱敏注解
+     */
+    private void desensitizeSimpleParam(MethodParameter param, Map<String, String> result) {
+        var paramName = param.getParameterName();
+        if (paramName == null || !result.containsKey(paramName)) {
+            return;
+        }
+        for (var annotation : param.getParameterAnnotations()) {
+            var rule = DesensitizeResolver.resolveRule(annotation);
+            if (rule != null) {
+                applyRule(result, paramName, rule);
+                break;
+            }
+        }
+    }
+
+    /**
+     * DTO 参数脱敏：遍历类字段（含父类），按字段名匹配请求参数，应用字段上的脱敏注解
+     */
+    private void desensitizeDtoParams(Class<?> dtoType, Map<String, String> result) {
+        var fieldRules = DesensitizeUtils.resolveFieldRules(dtoType);
+        for (var entry : fieldRules.entrySet()) {
+            applyRule(result, entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void applyRule(Map<String, String> params, String key, DesensitizeRule rule) {
+        params.computeIfPresent(key, (_, v) -> rule.apply(v));
+    }
+
+    private boolean isUserDefinedType(Class<?> type) {
+        String name = type.getName();
+        return !name.startsWith("java.")
+                && !name.startsWith("javax.")
+                && !name.startsWith("jakarta.")
+                && !name.startsWith("org.springframework.");
+    }
+
+
 }

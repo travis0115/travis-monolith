@@ -1,9 +1,10 @@
 package com.travis.monolith.module.demo.webmvc.internal.controller;
 
 
-import com.travis.infrastructure.framework.jackson.core.desensitize.annotation.regex.EmailDesensitize;
-import com.travis.infrastructure.framework.jackson.core.desensitize.annotation.regex.RegexDesensitize;
-import com.travis.infrastructure.framework.jackson.core.desensitize.annotation.slider.*;
+import com.travis.infrastructure.framework.desensitize.core.annotation.RegexDesensitize;
+import com.travis.infrastructure.framework.desensitize.core.annotation.SliderDesensitize;
+import com.travis.infrastructure.framework.desensitize.core.annotation.regex.EmailDesensitize;
+import com.travis.infrastructure.framework.desensitize.core.annotation.slider.*;
 import lombok.Data;
 
 @Data
@@ -14,7 +15,7 @@ public class DesensitizeDemo {
     private String bankCard;
     @CarLicenseDesensitize
     private String carLicense;
-    @com.travis.infrastructure.framework.jackson.core.desensitize.core.annotation.slider.FixedPhoneDesensitize
+    @FixedPhoneDesensitize
     private String fixedPhone;
     @IdCardDesensitize
     private String idCard;

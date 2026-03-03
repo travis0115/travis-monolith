@@ -75,7 +75,7 @@ spring:
     time-zone: ${travis.application.web.time-zone:UTC}
     date-format: yyyy-MM-dd HH:mm:ss
     serialization:
-      indent-output: true #格式化输出
+      indent-output: false #美化输出
     deserialization:
       fail_on_unknown_properties: false  #若存在无法匹配的属性抛出异常
   jmx:

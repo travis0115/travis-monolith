@@ -1,10 +1,11 @@
 package com.travis.infrastructure.framework.jackson.core.desensitize.serializer;
 
+
 import cn.hutool.core.util.StrUtil;
-import com.travis.infrastructure.framework.jackson.core.desensitize.annotation.regex.RegexDesensitize;
-import com.travis.infrastructure.framework.jackson.core.desensitize.annotation.slider.SliderDesensitize;
-import com.travis.infrastructure.framework.jackson.core.desensitize.resolver.DesensitizeResolver;
-import com.travis.infrastructure.framework.jackson.core.desensitize.rule.DesensitizeRule;
+import com.travis.infrastructure.framework.desensitize.core.annotation.RegexDesensitize;
+import com.travis.infrastructure.framework.desensitize.core.annotation.SliderDesensitize;
+import com.travis.infrastructure.framework.desensitize.core.resolver.DesensitizeResolver;
+import com.travis.infrastructure.framework.desensitize.core.rule.DesensitizeRule;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.BeanProperty;
 import tools.jackson.databind.SerializationContext;

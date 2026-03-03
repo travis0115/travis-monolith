@@ -23,7 +23,7 @@
                 </pattern>
                 <threadName/>
                 <loggerName/>
-                <mdc>
+                <mdc class="com.travis.infrastructure.framework.logging.core.logback.provider.DesensitizeMdcJsonProvider">
                     <!-- ********************* 链路 ********************* -->
                     <!-- 请求链路ID -->
                     <includeMdcKeyName>traceId</includeMdcKeyName>
@@ -38,8 +38,8 @@
                     <!-- 用户ID -->
                     <includeMdcKeyName>user_id</includeMdcKeyName>
                 </mdc>
-                <arguments/>
                 <message/>
+                <arguments class="com.travis.infrastructure.framework.logging.core.logback.provider.DesensitizeArgumentsJsonProvider"/>
                 <stackTrace/>
             </providers>
         </encoder>

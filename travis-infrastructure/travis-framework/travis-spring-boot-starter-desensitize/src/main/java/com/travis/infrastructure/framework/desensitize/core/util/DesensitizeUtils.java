@@ -56,7 +56,6 @@ public class DesensitizeUtils {
      * 用注解类的默认值构建脱敏规则。
      * 例如 resolveDefaultRule(MobileDesensitize.class) → SliderRule(3,4,'*')
      */
-    @SuppressWarnings("unchecked")
     public static <A extends Annotation> DesensitizeRule resolveDefaultRule(Class<A> annotationType) {
         A proxy = (A) Proxy.newProxyInstance(
                 annotationType.getClassLoader(),

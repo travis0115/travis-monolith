@@ -37,9 +37,8 @@ public class StringDesensitizeSerializer extends StdSerializer<String> {
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializationContext provider) {
-
         if (StrUtil.isBlank(value)) {
-            gen.writeNull();
+            gen.writeString("");
             return;
         }
         if (rule == null) {

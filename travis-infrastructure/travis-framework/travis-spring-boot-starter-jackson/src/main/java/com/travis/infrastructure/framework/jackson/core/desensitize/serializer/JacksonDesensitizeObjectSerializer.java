@@ -11,7 +11,7 @@ public class JacksonDesensitizeObjectSerializer implements DesensitizeObjectSeri
 
     @Override
     public String serialize(Object obj) {
-        if (obj == null) return "null";
+        if (obj == null) return "{}";
         if (obj instanceof String s) return s;
         return JsonUtils.toJsonString(obj);
     }

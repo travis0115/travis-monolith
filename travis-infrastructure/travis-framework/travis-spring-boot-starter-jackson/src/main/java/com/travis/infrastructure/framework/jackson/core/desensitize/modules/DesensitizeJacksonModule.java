@@ -1,4 +1,4 @@
-package com.travis.infrastructure.framework.jackson.core.desensitize.module;
+package com.travis.infrastructure.framework.jackson.core.desensitize.modules;
 
 import com.travis.infrastructure.framework.desensitize.core.annotation.DesensitizeBy;
 import com.travis.infrastructure.framework.jackson.core.desensitize.serializer.StringDesensitizeSerializer;

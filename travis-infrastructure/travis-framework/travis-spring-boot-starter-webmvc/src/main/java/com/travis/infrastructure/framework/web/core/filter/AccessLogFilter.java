@@ -8,7 +8,7 @@ import com.travis.infrastructure.common.web.constant.MdcKeys;
 import com.travis.infrastructure.common.web.enums.ClientType;
 import com.travis.infrastructure.framework.desensitize.core.resolver.DesensitizeResolver;
 import com.travis.infrastructure.framework.desensitize.core.rule.DesensitizeRule;
-import com.travis.infrastructure.framework.jackson.core.desensitize.util.DesensitizeUtils;
+import com.travis.infrastructure.framework.desensitize.core.util.DesensitizeUtils;
 import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import com.travis.infrastructure.framework.logging.core.constant.LogKeys;
 import com.travis.infrastructure.framework.logging.core.enums.LogType;
@@ -99,8 +99,12 @@ public class AccessLogFilter extends OncePerRequestFilter {
             argumentsJson.set(LogKeys.USER_AGENT, userAgent);
             argumentsJson.set(LogKeys.CLIENT_TYPE, clientType);
             argumentsJson.set(LogKeys.API_COST, apiCost);
-            argumentsJson.set(LogKeys.REQUEST_PARAMS, requestParams);
-            argumentsJson.set(LogKeys.REQUEST_BODY, requestBody);
+            if (!requestParams.isEmpty()) {
+                argumentsJson.set(LogKeys.REQUEST_PARAMS, requestParams);
+            }
+            if (StrUtil.isNotBlank(requestBody)) {
+                argumentsJson.set(LogKeys.REQUEST_BODY, requestBody);
+            }
 
             //TODO 记录返回值
 
@@ -146,8 +150,8 @@ public class AccessLogFilter extends OncePerRequestFilter {
      */
     private String desensitizeBody(HttpServletRequest request, HandlerMethod handlerMethod) {
         var rawBody = ServletUtils.getCachedJsonBody(request);
-        if (StrUtil.isBlank(rawBody)) {
-            return "{}";
+        if (StrUtil.isBlank(rawBody) || "{}".equals(rawBody)) {
+            return null;
         }
 
         if (handlerMethod == null) {

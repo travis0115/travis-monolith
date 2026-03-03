@@ -1,1 +1,1 @@
-com.travis.infrastructure.framework.jackson.core.desensitize.module.DesensitizeJacksonModule
+com.travis.infrastructure.framework.jackson.core.desensitize.modules.DesensitizeJacksonModule

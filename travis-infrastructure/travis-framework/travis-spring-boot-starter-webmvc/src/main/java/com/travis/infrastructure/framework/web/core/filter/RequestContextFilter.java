@@ -1,6 +1,5 @@
 package com.travis.infrastructure.framework.web.core.filter;
 
-import com.travis.infrastructure.framework.web.core.http.MutableHttpServletRequest;
 import com.travis.infrastructure.framework.web.core.utils.ServletUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,11 +30,9 @@ public class RequestContextFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) {
 
-        //先包装ContentCachingRequestWrapper支持重复读取body
-        //再包装MutableHttpServletRequest可自定义header的包装
-        var contentCachingRequestWrapper = ServletUtils.isJsonRequest(request) ?
+        //包装ContentCachingRequestWrapper支持重复读取body
+        var requestWrapper = ServletUtils.isJsonRequest(request) ?
                 new ContentCachingRequestWrapper(request, 0) : request;
-        var requestWrapper = new MutableHttpServletRequest(contentCachingRequestWrapper);
         var responseWrapper = new ContentCachingResponseWrapper(response);
         try {
             filterChain.doFilter(requestWrapper, responseWrapper);

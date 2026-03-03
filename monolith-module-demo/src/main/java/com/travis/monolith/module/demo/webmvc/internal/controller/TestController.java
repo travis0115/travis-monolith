@@ -5,7 +5,6 @@ import com.travis.infrastructure.framework.web.core.model.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -20,7 +19,7 @@ public class TestController {
     }
 
     @PostMapping("/test")
-    public ApiResponse<?> test(@RequestBody DesensitizeDemo desensitizeDemo) {
+    public ApiResponse<?> test( DesensitizeDemo desensitizeDemo) {
         // 准备参数
         desensitizeDemo = new DesensitizeDemo();
         desensitizeDemo.setNickname("芋道源码");

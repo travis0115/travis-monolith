@@ -10,9 +10,7 @@ public record DesensitizeRuleCacheKey(
 ) {
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DesensitizeRuleCacheKey(
-                Class<? extends Annotation> type, Map<String, Object> attributes1
-        ))) {
+        if (!(o instanceof DesensitizeRuleCacheKey(Class<? extends Annotation> type, Map<String, Object> attributes1))) {
             return false;
         }
 

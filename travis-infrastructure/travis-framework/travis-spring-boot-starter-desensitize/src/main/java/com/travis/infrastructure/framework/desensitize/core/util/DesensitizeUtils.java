@@ -1,10 +1,11 @@
 package com.travis.infrastructure.framework.desensitize.core.util;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.travis.infrastructure.framework.desensitize.core.resolver.DesensitizeResolver;
 import com.travis.infrastructure.framework.desensitize.core.rule.DesensitizeRule;
 import com.travis.infrastructure.framework.desensitize.core.spi.DesensitizeObjectSerializer;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
@@ -17,13 +18,34 @@ import java.util.concurrent.ConcurrentHashMap;
  * 统一脱敏 API
  * 即时用 toDesensitizedJson，日志延时用 ofDesensitizedJson
  */
+@Slf4j
 public class DesensitizeUtils {
 
     private static final Map<Class<?>, Map<String, DesensitizeRule>> FIELD_RULE_CACHE = new ConcurrentHashMap<>();
-    @Setter
+
+    /**
+     * 从 Spring 容器懒加载并缓存，由容器中 DesensitizeObjectSerializer Bean 提供实现。
+     * 容器未就绪或未注册该 Bean 时为 null，toDesensitizedJson 退化为 obj.toString()。
+     */
     private static volatile DesensitizeObjectSerializer objectSerializer;
 
     private DesensitizeUtils() {
+    }
+
+    private static DesensitizeObjectSerializer getObjectSerializer() {
+        var s = objectSerializer;
+        if (s != null) return s;
+        synchronized (DesensitizeUtils.class) {
+            s = objectSerializer;
+            if (s != null) return s;
+            try {
+                s = SpringUtil.getBean(DesensitizeObjectSerializer.class);
+            } catch (Throwable t) {
+                log.error("未获取到 DesensitizeObjectSerializer", t);
+            }
+            objectSerializer = s;
+            return s;
+        }
     }
 
     /**
@@ -31,7 +53,8 @@ public class DesensitizeUtils {
      */
     public static String toDesensitizedJson(Object obj) {
         if (obj == null) return "null";
-        if (objectSerializer != null) return objectSerializer.serialize(obj);
+        var serializer = getObjectSerializer();
+        if (serializer != null) return serializer.serialize(obj);
         return obj.toString();
     }
 
@@ -105,13 +128,7 @@ public class DesensitizeUtils {
         return new LazyForLog(obj);
     }
 
-    private static final class LazyForLog {
-        private final Object target;
-
-        LazyForLog(Object target) {
-            this.target = target;
-        }
-
+    private record LazyForLog(Object target) {
         @Override
         public String toString() {
             return toDesensitizedJson(target);

@@ -1,7 +1,7 @@
-package com.travis.infrastructure.framework.jackson.core.desensitize.modules;
+package com.travis.infrastructure.framework.desensitize.core.jackson.modules;
 
 import com.travis.infrastructure.framework.desensitize.core.annotation.DesensitizeBy;
-import com.travis.infrastructure.framework.jackson.core.desensitize.serializer.StringDesensitizeSerializer;
+import com.travis.infrastructure.framework.desensitize.core.jackson.serializer.StringDesensitizeSerializer;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.Annotated;
 import tools.jackson.databind.introspect.NopAnnotationIntrospector;

@@ -1,5 +1,6 @@
 package com.travis.infrastructure.framework.redis.config;
 
+import com.travis.infrastructure.framework.jackson.config.TravisJacksonAutoConfiguration;
 import com.travis.infrastructure.framework.jackson.core.validator.LaissezFaireSubTypeValidator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ import tools.jackson.databind.ObjectMapper;
  *
  * @author travis
  */
-@AutoConfiguration
+@AutoConfiguration(after = TravisJacksonAutoConfiguration.class)
 public class TravisRedisAutoConfiguration {
 
     private final ObjectMapper objectMapper;
@@ -43,8 +44,10 @@ public class TravisRedisAutoConfiguration {
         var jsonMapper = objectMapper.rebuild()
                 .disable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)    //成功解析值后不验证是否存在额外内容(缓存内容可信)
                 //不可全局设置，会导致Spring Boot Actuator等Object/JsonMapper污染
-                //添加默认类型到属性中，LaissezFaireSubTypeValidator 是全局放行的校验器，相当于关闭了校验，仅在序列化对象可信时使用，否则请使用白名单校验器 BasicPolymorphicTypeValidator
-                .activateDefaultTypingAsProperty(new LaissezFaireSubTypeValidator(), DefaultTyping.NON_FINAL_AND_ENUMS, "@class")
+                //添加默认类型到属性中，LaissezFaireSubTypeValidator 是全局放行的校验器，相当于关闭了校验，仅在序列化对象可信时使用，否则请使用白名单校验器
+                // BasicPolymorphicTypeValidator
+                .activateDefaultTypingAsProperty(new LaissezFaireSubTypeValidator(),
+                        DefaultTyping.NON_FINAL_AND_ENUMS, "@class")
                 .build();
         var jsonRedisSerializer = new GenericJacksonJsonRedisSerializer(jsonMapper);
 

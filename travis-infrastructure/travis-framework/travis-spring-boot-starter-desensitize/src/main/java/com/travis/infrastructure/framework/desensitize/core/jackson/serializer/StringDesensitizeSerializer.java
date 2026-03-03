@@ -1,4 +1,4 @@
-package com.travis.infrastructure.framework.jackson.core.desensitize.serializer;
+package com.travis.infrastructure.framework.desensitize.core.jackson.serializer;
 
 
 import cn.hutool.core.util.StrUtil;

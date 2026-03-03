@@ -31,7 +31,7 @@
                     <includeMdcKeyName>user_id</includeMdcKeyName>
                 </mdc>
                 <message/>
-                <arguments class="com.travis.infrastructure.framework.logging.core.logback.provider.DesensitizeArgumentsJsonProvider">
+                <arguments class="com.travis.infrastructure.framework.logging.core.logback.provider.DeduplicatingArgumentsJsonProvider">
                     <includeNonStructuredArguments>true</includeNonStructuredArguments>
                 </arguments>
                 <stackTrace/>

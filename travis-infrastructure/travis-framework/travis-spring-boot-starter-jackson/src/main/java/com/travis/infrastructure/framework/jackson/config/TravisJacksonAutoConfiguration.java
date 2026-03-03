@@ -1,13 +1,8 @@
 package com.travis.infrastructure.framework.jackson.config;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.travis.infrastructure.framework.desensitize.core.spi.DesensitizeObjectSerializer;
-import com.travis.infrastructure.framework.desensitize.core.util.DesensitizeUtils;
-import com.travis.infrastructure.framework.jackson.core.desensitize.modules.DesensitizeJacksonModule;
-import com.travis.infrastructure.framework.jackson.core.desensitize.serializer.JacksonDesensitizeObjectSerializer;
 import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
 import org.springframework.context.annotation.Bean;
@@ -42,25 +37,6 @@ public class TravisJacksonAutoConfiguration {
                             new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(jacksonProperties.getDateFormat())));
         }
         return javaTimeModule;
-    }
-
-    /**
-     * 注册脱敏 Jackson Module，自动发现 @DesensitizeBy 注解并绑定序列化器
-     */
-    @Bean
-    public JacksonModule desensitizeJacksonModule() {
-        return new DesensitizeJacksonModule();
-    }
-
-    /**
-     * 注册 SPI 实现，驱动 DesensitizeUtils.toDesensitizedJson() 和 Ds.of()
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public DesensitizeObjectSerializer desensitizeObjectSerializer() {
-        var serializer = new JacksonDesensitizeObjectSerializer();
-        DesensitizeUtils.setObjectSerializer(serializer);
-        return serializer;
     }
 
 

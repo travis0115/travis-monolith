@@ -17,7 +17,7 @@ public class TestController {
     }
 
     @PostMapping("/test")
-    public ApiResponse<?> test( DesensitizeDemo desensitizeDemo) {
+    public ApiResponse<?> test(DesensitizeDemo desensitizeDemo) {
         // 准备参数
         desensitizeDemo = new DesensitizeDemo();
         desensitizeDemo.setNickname("芋道源码");

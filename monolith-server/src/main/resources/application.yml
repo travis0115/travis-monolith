@@ -2,8 +2,8 @@ server:
   port: 8080
 spring:
   profiles:
-    active: dev
-  #    active: prod
+    #    active: dev
+    active: prod
   application:
     name: travis-monolith
   cache:

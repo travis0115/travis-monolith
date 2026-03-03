@@ -127,14 +127,16 @@ public class DevLoggerUtil {
                 json = String.valueOf(value);
             }
 
+
             // 如果是 JSON 对象或数组，进行美化并分行
             if (json.startsWith("{") || json.startsWith("[")) {
-                return Arrays.stream(
-                                MAPPER.readTree(json)
-                                        .toPrettyString()
-                                        .split("\n"))
-                        .map(String::stripLeading)
-                        .toList();
+                if (json.contains("\n")) {
+                    return Arrays.asList(json.split("\n"));
+                }
+                return Arrays.asList(
+                        MAPPER.readTree(json.trim())
+                                .toPrettyString()
+                                .split("\n"));
             }
             return List.of(json);
         } catch (Exception e) {

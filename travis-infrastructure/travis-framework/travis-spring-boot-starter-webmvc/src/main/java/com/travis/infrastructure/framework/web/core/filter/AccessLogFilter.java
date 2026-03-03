@@ -30,7 +30,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -86,8 +88,9 @@ public class AccessLogFilter extends OncePerRequestFilter {
             var userAgent = ServletUtils.getUserAgent();
             var clientType = ClientType.from(request.getHeader(CustomHttpHeaders.CLIENT_TYPE));
             var apiCost = (System.currentTimeMillis() - beginTime) + " ms";
-            var requestParams = desensitizeParams(request, handlerMethod);
-            var requestBody = desensitizeBody(request, handlerMethod);
+            var requestParams = desensitizeRequestParams(request, handlerMethod);
+            var requestBody = desensitizeRequestBody(request, handlerMethod);
+            var apiResult = desensitizeResponseBody(response);
 
             var argumentsJson = new JSONObject();
             argumentsJson.set(MdcKeys.TENANT_ID, tenantId);
@@ -105,8 +108,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
             if (StrUtil.isNotBlank(requestBody)) {
                 argumentsJson.set(LogKeys.REQUEST_BODY, requestBody);
             }
-
-            //TODO 记录返回值
+            argumentsJson.set(LogKeys.API_RESULT, apiResult);
 
             if ("dev".equalsIgnoreCase(SpringUtil.getActiveProfile())) {
                 var logger = LoggerFactory.getLogger(this.getClass());
@@ -148,7 +150,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
      * 找到 Controller 方法的 @RequestBody 参数类型，
      * 将原始 JSON 反序列化为该类型后重新序列化，Jackson 的 StringDesensitizeSerializer 自动处理脱敏注解。
      */
-    private String desensitizeBody(HttpServletRequest request, HandlerMethod handlerMethod) {
+    private String desensitizeRequestBody(HttpServletRequest request, HandlerMethod handlerMethod) {
         var rawBody = ServletUtils.getCachedJsonBody(request);
         if (StrUtil.isBlank(rawBody) || "{}".equals(rawBody)) {
             return null;
@@ -178,14 +180,13 @@ public class AccessLogFilter extends OncePerRequestFilter {
         return rawBody;
     }
 
-    // ==================== RequestParams 脱敏 ====================
 
     /**
      * 对请求参数进行脱敏，支持两种场景：
      * 1. 散参数：@RequestParam String mobile — 检查方法参数上的脱敏注解
      * 2. DTO 参数：UserQueryDTO dto — 扫描 DTO 类字段上的脱敏注解，按字段名匹配参数
      */
-    private Map<String, String> desensitizeParams(HttpServletRequest request, HandlerMethod handlerMethod) {
+    private Map<String, String> desensitizeRequestParams(HttpServletRequest request, HandlerMethod handlerMethod) {
         var rawParams = ServletUtils.getParamMap(request);
         if (rawParams.isEmpty() || handlerMethod == null) {
             return rawParams;
@@ -197,9 +198,9 @@ public class AccessLogFilter extends OncePerRequestFilter {
                 var paramType = param.getParameterType();
 
                 if (BeanUtils.isSimpleValueType(paramType)) {
-                    desensitizeSimpleParam(param, result);
+                    desensitizeSimpleRequestParam(param, result);
                 } else if (isUserDefinedType(paramType)) {
-                    desensitizeDtoParams(paramType, result);
+                    desensitizeDtoRequestParams(paramType, result);
                 }
             }
 
@@ -213,7 +214,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
     /**
      * 散参数脱敏：检查方法参数上直接标注的脱敏注解
      */
-    private void desensitizeSimpleParam(MethodParameter param, Map<String, String> result) {
+    private void desensitizeSimpleRequestParam(MethodParameter param, Map<String, String> result) {
         var paramName = param.getParameterName();
         if (paramName == null || !result.containsKey(paramName)) {
             return;
@@ -230,11 +231,29 @@ public class AccessLogFilter extends OncePerRequestFilter {
     /**
      * DTO 参数脱敏：遍历类字段（含父类），按字段名匹配请求参数，应用字段上的脱敏注解
      */
-    private void desensitizeDtoParams(Class<?> dtoType, Map<String, String> result) {
+    private void desensitizeDtoRequestParams(Class<?> dtoType, Map<String, String> result) {
         var fieldRules = DesensitizeUtils.resolveFieldRules(dtoType);
         for (var entry : fieldRules.entrySet()) {
             applyRule(result, entry.getKey(), entry.getValue());
         }
+    }
+
+    private String desensitizeResponseBody(HttpServletResponse response) {
+        if (!(response instanceof ContentCachingResponseWrapper)) {
+            log.warn("response is not ContentCachingResponseWrapper");
+            return null;
+        }
+        var content = ((ContentCachingResponseWrapper) response).getContentAsByteArray();
+        if (content.length > 0) {
+            var responseBody = new String(content, StandardCharsets.UTF_8);
+            if (StrUtil.isNotBlank(responseBody)) {
+                // 返回体已由 jackson 脱敏
+                return responseBody;
+            }
+        }
+
+        return null;
+
     }
 
     private void applyRule(Map<String, String> params, String key, DesensitizeRule rule) {

@@ -20,15 +20,23 @@ import java.util.regex.Pattern;
 public class DevLoggerUtil {
 
     /**
+     * JSON 序列化器，启用缩进输出
+     * 懒加载，避免类加载时依赖 JsonUtils 导致初始化顺序问题
+     */
+    private static ObjectMapper getMapper() {
+        return MapperHolder.INSTANCE;
+    }
+
+    private static final class MapperHolder {
+        public static final ObjectMapper INSTANCE = JsonUtils.getObjectMapper().rebuild()
+                .enable(SerializationFeature.INDENT_OUTPUT).build();
+    }
+
+    /**
      * 总输出宽度（字符数）
      */
     private static final int TOTAL_WIDTH = 80;
 
-    /**
-     * JSON 序列化器，启用缩进输出
-     */
-    private static final ObjectMapper MAPPER = JsonUtils.getObjectMapper().rebuild()
-            .enable(SerializationFeature.INDENT_OUTPUT).build();
 
     /**
      * ANSI 颜色重置码
@@ -122,9 +130,9 @@ public class DevLoggerUtil {
         try {
             String json;
             if (value instanceof Map || value instanceof Collection) {
-                json = MAPPER.writeValueAsString(value);
+                json = getMapper().writeValueAsString(value).trim();
             } else {
-                json = String.valueOf(value);
+                json = String.valueOf(value).trim();
             }
 
 
@@ -134,7 +142,7 @@ public class DevLoggerUtil {
                     return Arrays.asList(json.split("\n"));
                 }
                 return Arrays.asList(
-                        MAPPER.readTree(json.trim())
+                        getMapper().readTree(json.trim())
                                 .toPrettyString()
                                 .split("\n"));
             }
@@ -169,7 +177,7 @@ public class DevLoggerUtil {
      * @return 清理后的文本
      */
     private static String stripAnsi(String text) {
-        return ANSI.matcher(text).replaceAll("");
+        return text == null ? "" : ANSI.matcher(text).replaceAll("");
     }
 
     /**

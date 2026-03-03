@@ -35,6 +35,11 @@ public class DesensitizeMdcJsonProvider extends MdcJsonProvider {
 
     @Override
     public void writeTo(JsonGenerator generator, ILoggingEvent event) {
+        if (includeMdcKeyNames.isEmpty()) {
+            super.writeTo(generator, event);
+            return;
+        }
+
         var mdcMap = event.getMDCPropertyMap();
         if (mdcMap == null || mdcMap.isEmpty()) {
             return;

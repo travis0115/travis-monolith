@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "travis.application.web.i18n.enabled",
+      "type": "java.lang.String",
+      "description": "Description for travis.application.web.i18n.enabled."
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.travis.infrastructure.framework.web.core.enums;
+package com.travis.infrastructure.framework.logging.core.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

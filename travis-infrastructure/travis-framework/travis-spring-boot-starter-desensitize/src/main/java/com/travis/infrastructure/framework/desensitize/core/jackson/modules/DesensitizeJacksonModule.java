@@ -10,8 +10,7 @@ import tools.jackson.databind.module.SimpleModule;
 import java.lang.annotation.Annotation;
 
 /**
- * Jackson Module：自动为带有 @DesensitizeBy 元注解的 String 字段绑定 StringDesensitizeSerializer。
- * 注册到 ObjectMapper 后，注解上不再需要 @JacksonAnnotationsInside + @JsonSerialize。
+ * Jackson Module：自动为带有 @DesensitizeBy 元注解的 String 字段绑定 StringDesensitizeSerializer
  */
 public class DesensitizeJacksonModule extends SimpleModule {
 

@@ -13,7 +13,7 @@ import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import com.travis.infrastructure.framework.logging.core.constant.LogKeys;
 import com.travis.infrastructure.framework.logging.core.enums.LogType;
 import com.travis.infrastructure.framework.logging.core.util.DevLoggerUtil;
-import com.travis.infrastructure.framework.web.core.enums.AccessLogger;
+import com.travis.infrastructure.framework.logging.core.enums.AccessLogger;
 import com.travis.infrastructure.framework.web.core.utils.ServletUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,6 +71,9 @@ public class AccessLogFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * 输出访问日志
+     */
     private void outputAccessLog(HttpServletRequest request, HttpServletResponse response,
                                  long beginTime) {
         if (!enabledAccessLog) {
@@ -238,6 +241,10 @@ public class AccessLogFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * 返回体脱敏：尝试从 response 中获取 body 内容
+     * Jackson 已脱敏,直接返回
+     */
     private String desensitizeResponseBody(HttpServletResponse response) {
         if (!(response instanceof ContentCachingResponseWrapper)) {
             log.warn("response is not ContentCachingResponseWrapper");
@@ -256,10 +263,16 @@ public class AccessLogFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * 对参数值应用脱敏规则
+     */
     private void applyRule(Map<String, String> params, String key, DesensitizeRule rule) {
         params.computeIfPresent(key, (_, v) -> rule.apply(v));
     }
 
+    /**
+     * 判断是否为用户自定义类型
+     */
     private boolean isUserDefinedType(Class<?> type) {
         String name = type.getName();
         return !name.startsWith("java.")

@@ -16,7 +16,6 @@ import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.net.multipart.MultipartFormData;
 import cn.hutool.core.net.multipart.UploadSetting;
 import cn.hutool.core.util.*;
-import cn.hutool.json.JSONUtil;
 import com.travis.infrastructure.framework.jackson.core.util.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
@@ -27,7 +26,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -40,7 +38,6 @@ import java.util.*;
 
 /**
  * Servlet相关工具类封装
- *
  */
 public class ServletUtils {
 
@@ -52,7 +49,7 @@ public class ServletUtils {
      * @return Map
      */
     public static Map<String, String[]> getParams(ServletRequest request) {
-        final Map<String, String[]> map = request.getParameterMap();
+        final var map = request.getParameterMap();
         return Collections.unmodifiableMap(map);
     }
 
@@ -63,15 +60,15 @@ public class ServletUtils {
      * @return Map
      */
     public static Map<String, String> getParamMap(ServletRequest request) {
-        Map<String, String> params = new HashMap<>();
-        for (Map.Entry<String, String[]> entry : getParams(request).entrySet()) {
+        var params = new HashMap<String, String>();
+        for (var entry : getParams(request).entrySet()) {
             params.put(entry.getKey(), ArrayUtil.join(entry.getValue(), StrUtil.COMMA));
         }
         return params;
     }
 
     /**
-     * 获取请求体<br>
+     * 获取请求体
      * 调用该方法后，getParam方法将失效
      *
      * @param request {@link ServletRequest}
@@ -79,7 +76,7 @@ public class ServletUtils {
      * @since 4.0.2
      */
     public static String getBody(ServletRequest request) {
-        try (final BufferedReader reader = request.getReader()) {
+        try (final var reader = request.getReader()) {
             return IoUtil.read(reader);
         } catch (IOException e) {
             throw new IORuntimeException(e);
@@ -114,11 +111,11 @@ public class ServletUtils {
      * @since 3.0.4
      */
     public static <T> T fillBean(final ServletRequest request, T bean, CopyOptions copyOptions) {
-        final String beanName = StrUtil.lowerFirst(bean.getClass().getSimpleName());
+        final var beanName = StrUtil.lowerFirst(bean.getClass().getSimpleName());
         return BeanUtil.fillBean(bean, new ValueProvider<String>() {
             @Override
             public Object value(String key, Type valueType) {
-                String[] values = request.getParameterValues(key);
+                var values = request.getParameterValues(key);
                 if (ArrayUtil.isEmpty(values)) {
                     values = request.getParameterValues(beanName + StrUtil.DOT + key);
                     if (ArrayUtil.isEmpty(values)) {
@@ -192,7 +189,8 @@ public class ServletUtils {
      * @return IP地址
      */
     public static String getClientIP(HttpServletRequest request, String... otherHeaderNames) {
-        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP"
+        var headers = new String[]{"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP"
                 , "HTTP_X_FORWARDED_FOR"};
         if (ArrayUtil.isNotEmpty(otherHeaderNames)) {
             headers = ArrayUtil.addAll(otherHeaderNames, headers);
@@ -215,8 +213,8 @@ public class ServletUtils {
      * @since 4.4.1
      */
     public static String getClientIPByHeader(HttpServletRequest request, String... headerNames) {
-        String ip;
-        for (String header : headerNames) {
+        var ip = "";
+        for (var header : headerNames) {
             ip = request.getHeader(header);
             if (!NetUtil.isUnknown(ip)) {
                 return NetUtil.getMultistageReverseProxyIp(ip);
@@ -251,7 +249,7 @@ public class ServletUtils {
      * @since 4.0.2
      */
     public static MultipartFormData getMultipart(ServletRequest request, UploadSetting uploadSetting) throws IORuntimeException {
-        final MultipartFormData formData = new MultipartFormData(uploadSetting);
+        final var formData = new MultipartFormData(uploadSetting);
         try {
             formData.parseRequestStream(request.getInputStream(), CharsetUtil.charset(request.getCharacterEncoding()));
         } catch (IOException e) {
@@ -270,9 +268,9 @@ public class ServletUtils {
      * @since 4.6.2
      */
     public static Map<String, String> getHeaderMap(HttpServletRequest request) {
-        final Map<String, String> headerMap = new HashMap<>();
+        final var headerMap = new HashMap<String, String>();
 
-        final Enumeration<String> names = request.getHeaderNames();
+        final var names = request.getHeaderNames();
         String name;
         while (names.hasMoreElements()) {
             name = names.nextElement();
@@ -289,9 +287,9 @@ public class ServletUtils {
      * @return header值
      */
     public static Map<String, List<String>> getHeadersMap(final HttpServletRequest request) {
-        final Map<String, List<String>> headerMap = new LinkedHashMap<>();
+        final var headerMap = new LinkedHashMap<String, List<String>>();
 
-        final Enumeration<String> names = request.getHeaderNames();
+        final var names = request.getHeaderNames();
         String name;
         while (names.hasMoreElements()) {
             name = names.nextElement();
@@ -308,10 +306,10 @@ public class ServletUtils {
      * @return header值
      */
     public static Map<String, Collection<String>> getHeadersMap(HttpServletResponse response) {
-        final Map<String, Collection<String>> headerMap = new HashMap<>();
+        final var headerMap = new HashMap<String, Collection<String>>();
 
-        final Collection<String> names = response.getHeaderNames();
-        for (String name : names) {
+        final var names = response.getHeaderNames();
+        for (var name : names) {
             headerMap.put(name, response.getHeaders(name));
         }
 
@@ -326,7 +324,7 @@ public class ServletUtils {
      * @return header值
      */
     public static String getHeaderIgnoreCase(HttpServletRequest request, String nameIgnoreCase) {
-        final Enumeration<String> names = request.getHeaderNames();
+        final var names = request.getHeaderNames();
         String name;
         while (names.hasMoreElements()) {
             name = names.nextElement();
@@ -360,7 +358,7 @@ public class ServletUtils {
      * @since 4.6.2
      */
     public static String getHeader(HttpServletRequest request, String name, Charset charset) {
-        final String header = request.getHeader(name);
+        final var header = request.getHeader(name);
         if (null != header) {
             return CharsetUtil.convert(header, CharsetUtil.CHARSET_ISO_8859_1, charset);
         }
@@ -374,7 +372,7 @@ public class ServletUtils {
      * @return 客户浏览器是否为IE
      */
     public static boolean isIE(HttpServletRequest request) {
-        String userAgent = getHeaderIgnoreCase(request, "User-Agent");
+        var userAgent = getHeaderIgnoreCase(request, "User-Agent");
         if (StrUtil.isNotBlank(userAgent)) {
             //noinspection ConstantConditions
             userAgent = userAgent.toUpperCase();
@@ -414,7 +412,7 @@ public class ServletUtils {
             return false;
         }
 
-        String contentType = request.getContentType();
+        var contentType = request.getContentType();
         if (StrUtil.isBlank(contentType)) {
             return false;
         }
@@ -439,7 +437,7 @@ public class ServletUtils {
      * @return Cookie map
      */
     public static Map<String, Cookie> readCookieMap(HttpServletRequest httpServletRequest) {
-        final Cookie[] cookies = httpServletRequest.getCookies();
+        final var cookies = httpServletRequest.getCookies();
         if (ArrayUtil.isEmpty(cookies)) {
             return MapUtil.empty();
         }
@@ -483,7 +481,7 @@ public class ServletUtils {
      */
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds,
                                  String path, String domain) {
-        Cookie cookie = new Cookie(name, value);
+        var cookie = new Cookie(name, value);
         if (domain != null) {
             cookie.setDomain(domain);
         }
@@ -550,8 +548,8 @@ public class ServletUtils {
      * @since 4.1.15
      */
     public static void write(HttpServletResponse response, File file) {
-        final String fileName = file.getName();
-        final String contentType = ObjectUtil.defaultIfNull(FileUtil.getMimeType(fileName), "application/octet-stream");
+        final var fileName = file.getName();
+        final var contentType = ObjectUtil.defaultIfNull(FileUtil.getMimeType(fileName), "application/octet-stream");
         BufferedInputStream in = null;
         try {
             in = FileUtil.getInputStream(file);
@@ -589,8 +587,8 @@ public class ServletUtils {
      * @since 4.1.15
      */
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
-        final String charset = ObjectUtil.defaultIfNull(response.getCharacterEncoding(), CharsetUtil.UTF_8);
-        final String encodeText = URLUtil.encodeAll(fileName, CharsetUtil.charset(charset));
+        final var charset = ObjectUtil.defaultIfNull(response.getCharacterEncoding(), CharsetUtil.UTF_8);
+        final var encodeText = URLUtil.encodeAll(fileName, CharsetUtil.charset(charset));
         response.setHeader("Content-Disposition",
                 StrUtil.format("attachment;filename=\"{}\";filename*={}''{}", encodeText, charset, encodeText));
         response.setContentType(contentType);
@@ -646,7 +644,7 @@ public class ServletUtils {
      * @param object   对象，会序列化成 JSON 字符串
      */
     public static void writeJSON(HttpServletResponse response, Object object) {
-        String content = JSONUtil.toJsonStr(object);
+        var content = JsonUtils.toJsonString(object);
         write(response, content, MediaType.APPLICATION_JSON_VALUE);
     }
 
@@ -673,10 +671,9 @@ public class ServletUtils {
     /**
      * 获得User-Agent
      *
-     * @return
      */
     public static String getUserAgent() {
-        HttpServletRequest request = getRequest();
+        var request = getRequest();
         if (request == null) {
             return null;
         }
@@ -690,7 +687,7 @@ public class ServletUtils {
      * @return ua
      */
     public static String getUserAgent(HttpServletRequest request) {
-        String ua = request.getHeader(HttpHeaders.USER_AGENT);
+        var ua = request.getHeader(HttpHeaders.USER_AGENT);
         return ua != null ? ua : "";
     }
 
@@ -700,7 +697,7 @@ public class ServletUtils {
      * @return HttpServletRequest
      */
     public static HttpServletRequest getRequest() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        var requestAttributes = RequestContextHolder.getRequestAttributes();
         if (!(requestAttributes instanceof ServletRequestAttributes)) {
             return null;
         }
@@ -757,16 +754,7 @@ public class ServletUtils {
         var encoding = wrapper.getCharacterEncoding();
         var body = new String(content, Charset.forName(encoding));
         // 去除前端传入的格式化空白（换行、缩进），压缩为单行 JSON
-        return compactJson(body);
-    }
-
-    private static String compactJson(String json) {
-        try {
-            Object obj = JsonUtils.parseObject(json, Object.class);
-            return obj != null ? JsonUtils.toJsonString(obj) : json;
-        } catch (Exception e) {
-            return json;
-        }
+        return JsonUtils.compactJson(body);
     }
 
     /**

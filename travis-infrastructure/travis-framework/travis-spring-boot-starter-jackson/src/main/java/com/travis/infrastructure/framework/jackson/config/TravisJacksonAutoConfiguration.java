@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Jackson自动配置类
  * @author travis
  */
 @AutoConfiguration(after = JacksonProperties.class)

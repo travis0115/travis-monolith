@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 脱敏解析器
+ */
 @Slf4j
 public class DesensitizeResolver {
 

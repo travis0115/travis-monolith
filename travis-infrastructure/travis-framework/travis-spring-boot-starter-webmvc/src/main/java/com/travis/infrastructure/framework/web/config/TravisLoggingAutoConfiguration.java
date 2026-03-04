@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 
 /**
+ * 日志相关自动配置类
+ *
  * @author travis
  */
 @AutoConfiguration
@@ -30,9 +32,9 @@ public class TravisLoggingAutoConfiguration implements WebMvcConfigurer {
         //        DesensitizeMdcJsonProvider.registerRule(MdcKeys.TRACE_ID,
         //                DesensitizeUtils.resolveDefaultRule(MobileDesensitize.class)::apply);
 
-//         示例2：直接用 SliderRule，保留前2后2
-//        DesensitizeMdcJsonProvider.registerRule(MdcKeys.TRACE_ID,
-//                new SliderDesensitizeRule(2, 2, '*')::apply);
+        // 示例2：直接用 SliderRule，保留前2后2
+        //        DesensitizeMdcJsonProvider.registerRule(MdcKeys.TRACE_ID,
+        //                new SliderDesensitizeRule(2, 2, '*')::apply);
 
     }
 

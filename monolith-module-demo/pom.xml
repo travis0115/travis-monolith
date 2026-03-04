@@ -12,9 +12,7 @@
     <artifactId>monolith-module-demo</artifactId>
 
     <description>
-        Demo模块,用于测试及给AI规范参考。
-            1. 示范 Webmvc 模块
-            2. 启用 i18n
+        Demo模块
     </description>
 
     <dependencies>

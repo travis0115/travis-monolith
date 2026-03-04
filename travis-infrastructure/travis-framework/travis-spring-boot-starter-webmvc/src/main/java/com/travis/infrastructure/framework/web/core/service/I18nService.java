@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
+ * 国际化服务
  * @author travis
  */
 public class I18nService {

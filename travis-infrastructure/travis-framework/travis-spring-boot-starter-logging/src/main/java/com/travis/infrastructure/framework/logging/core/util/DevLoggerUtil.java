@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * 开发环境日志工具类
  * <p>
  * 用于在控制台以格式化的彩色边框输出日志信息，支持自动换行、中文宽度计算及 JSON 美化。
- * 仅在开发环境下使用，便于调试和查看复杂数据结构。
+ * 仅用于开发环境下使用，便于调试和查看复杂数据结构。
  */
 public class DevLoggerUtil {
 

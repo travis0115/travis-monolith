@@ -5,6 +5,10 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.util.*;
 
+
+/**
+ * 可变的HttpServletRequest，支持写入Header
+ */
 public class MutableHttpServletRequest extends HttpServletRequestWrapper {
 
     private final Map<String, String> customHeaders = new HashMap<>();

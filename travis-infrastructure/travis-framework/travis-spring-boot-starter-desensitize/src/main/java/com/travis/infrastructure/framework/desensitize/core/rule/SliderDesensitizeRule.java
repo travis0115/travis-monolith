@@ -1,5 +1,11 @@
 package com.travis.infrastructure.framework.desensitize.core.rule;
 
+/**
+ * 滑动脱敏规则
+ * @param prefix
+ * @param suffix
+ * @param mask
+ */
 public record SliderDesensitizeRule(int prefix, int suffix, char mask) implements DesensitizeRule {
 
     @Override

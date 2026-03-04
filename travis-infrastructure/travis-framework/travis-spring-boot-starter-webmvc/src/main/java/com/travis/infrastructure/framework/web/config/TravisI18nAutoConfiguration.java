@@ -1,7 +1,6 @@
 package com.travis.infrastructure.framework.web.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.travis.infrastructure.framework.web.config.properties.I18nProperties;
 import com.travis.infrastructure.framework.web.core.service.I18nService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NullMarked;
@@ -33,11 +32,13 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
+ * 自动装配i18n相关组件
+ *
  * @author travis
  */
 @AutoConfiguration
 @AutoConfigureBefore(MessageSourceAutoConfiguration.class)
-@EnableConfigurationProperties({MessageSourceProperties.class, I18nProperties.class})
+@EnableConfigurationProperties({MessageSourceProperties.class})
 @Import(I18nService.class)
 public class TravisI18nAutoConfiguration {
 
@@ -115,8 +116,6 @@ public class TravisI18nAutoConfiguration {
 
     /**
      * 自动装配I18nService
-     * @param messageSource
-     * @return
      */
     @Bean
     @ConditionalOnMissingBean

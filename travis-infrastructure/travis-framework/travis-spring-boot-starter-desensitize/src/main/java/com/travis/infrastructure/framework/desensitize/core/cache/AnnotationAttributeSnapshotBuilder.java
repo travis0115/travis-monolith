@@ -29,7 +29,7 @@ public final class AnnotationAttributeSnapshotBuilder {
             new ClassValue<>() {
                 @Override
                 protected Map<String, MethodHandle> computeValue(@NonNull Class<?> type) {
-                    Map<String, MethodHandle> map = new ConcurrentHashMap<>();
+                    var map = new ConcurrentHashMap<String, MethodHandle>();
                     try {
                         var lookup = MethodHandles.lookup();
                         //注解类型的所有方法
@@ -126,10 +126,6 @@ public final class AnnotationAttributeSnapshotBuilder {
      */
     private static final class AnnotationSnapshot {
         private final Map<String, Object> attrs;
-
-        AnnotationSnapshot(Annotation annotation) {
-            this(annotation, Collections.newSetFromMap(new IdentityHashMap<>()));
-        }
 
         AnnotationSnapshot(Annotation annotation, Set<Class<? extends Annotation>> visited) {
             this.attrs = new HashMap<>();

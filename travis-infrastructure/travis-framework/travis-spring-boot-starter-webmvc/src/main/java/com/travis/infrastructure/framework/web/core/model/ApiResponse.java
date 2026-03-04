@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
  * Api返回结果封装类
  *
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

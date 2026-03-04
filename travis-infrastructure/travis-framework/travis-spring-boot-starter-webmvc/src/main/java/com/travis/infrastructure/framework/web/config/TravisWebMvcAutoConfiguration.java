@@ -5,7 +5,6 @@ import com.travis.infrastructure.common.web.constant.WebFilterOrders;
 import com.travis.infrastructure.framework.web.core.exception.advice.CommonExceptionHandlerAdvice;
 import com.travis.infrastructure.framework.web.core.filter.RequestContextFilter;
 import com.travis.infrastructure.framework.web.core.filter.RequestIdFilter;
-import com.travis.infrastructure.framework.web.core.service.I18nService;
 import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -18,6 +17,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
+ * Web MVC 自动配置类
+ *
  * @author travis
  */
 @AutoConfiguration
@@ -48,8 +49,8 @@ public class TravisWebMvcAutoConfiguration implements WebMvcConfigurer {
      */
     @Bean
     @ConditionalOnMissingBean
-    public CommonExceptionHandlerAdvice commonExceptionHandler(I18nService i18nService) {
-        return new CommonExceptionHandlerAdvice(i18nService);
+    public CommonExceptionHandlerAdvice commonExceptionHandler() {
+        return new CommonExceptionHandlerAdvice();
     }
 
 
@@ -72,6 +73,9 @@ public class TravisWebMvcAutoConfiguration implements WebMvcConfigurer {
                 WebFilterOrders.REQUEST_ID_FILTER);
     }
 
+    /**
+     * 创建Filter Bean
+     */
     private static <T extends Filter> FilterRegistrationBean<T> createFilterBean(T filter, Integer order) {
         FilterRegistrationBean<T> bean = new FilterRegistrationBean<>(filter);
         bean.setOrder(order);

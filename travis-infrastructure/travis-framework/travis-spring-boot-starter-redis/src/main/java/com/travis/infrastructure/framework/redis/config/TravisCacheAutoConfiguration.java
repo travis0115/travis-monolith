@@ -16,15 +16,21 @@ import java.util.Objects;
 
 
 /**
- * Cache 配置类
+ * Cache 配置类，基于Redis
+ *
  * @author travis
  */
 @AutoConfiguration
 @EnableCaching
 @EnableConfigurationProperties({CacheProperties.class})
 public class TravisCacheAutoConfiguration {
+
+    /**
+     * 基于Redis的缓存配置
+     */
     @Bean
-    public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties, RedisTemplate<String, Object> redisTemplate) {
+    public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties, RedisTemplate<String,
+            Object> redisTemplate) {
         var config = RedisCacheConfiguration.defaultCacheConfig();
         var redisProperties = cacheProperties.getRedis();
         //设置默认缓存时间
@@ -48,10 +54,14 @@ public class TravisCacheAutoConfiguration {
             return cacheName + StrUtil.COLON;
         });
         // 设置使用 JSON 序列化方式
-        config = config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getValueSerializer()));
+        config =
+                config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate.getValueSerializer()));
         return config;
     }
 
+    /**
+     * 配置缓存管理器
+     */
     @Bean
     public CacheManager cacheManager(RedisCacheConfiguration redisCacheConfiguration,
                                      RedisTemplate<String, Object> redisTemplate) {

@@ -10,7 +10,10 @@
     </parent>
 
     <artifactId>travis-spring-boot-starter-desensitize</artifactId>
-    <description>统一脱敏中台内核：注解、规则、解析器</description>
+    <description>
+        统一脱敏：注解、规则、解析器
+        默认基于jackson实现
+    </description>
 
     <dependencies>
         <dependency>

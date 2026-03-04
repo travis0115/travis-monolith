@@ -414,4 +414,16 @@ public class JsonUtils {
         return getObjectMapper().convertValue(obj,
                 getObjectMapper().getTypeFactory().constructCollectionType(List.class, clazz));
     }
+
+    /**
+     * 压缩为单行 JSON
+     */
+    public static String compactJson(String json) {
+        try {
+            var obj = parseObject(json, Object.class);
+            return obj != null ? toJsonString(obj) : json;
+        } catch (Exception e) {
+            return json;
+        }
+    }
 }

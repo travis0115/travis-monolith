@@ -4,6 +4,12 @@ import cn.hutool.core.util.StrUtil;
 
 import java.util.regex.Pattern;
 
+/**
+ * 正则脱敏规则
+ *
+ * @param pattern
+ * @param replacer
+ */
 public record RegexDesensitizeRule(Pattern pattern, String replacer) implements DesensitizeRule {
 
     public RegexDesensitizeRule(String regex, String replacer) {

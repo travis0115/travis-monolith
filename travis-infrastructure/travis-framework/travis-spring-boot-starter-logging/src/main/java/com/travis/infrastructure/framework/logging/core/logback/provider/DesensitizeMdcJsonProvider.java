@@ -15,6 +15,11 @@ import java.util.function.UnaryOperator;
 /**
  * 支持脱敏的 MDC JSON Provider
  * 通过 LoggerContext 共享规则，避免 Classloader 隔离问题
+ * <p>
+ * 注入规则：
+ * 1. 通过静态方法 registerRule 注册规则，规则会存储在 LoggerContext 中，确保与 Logback provider 实例共享同一份数据。
+ * 2. 在 provider 实例中，通过 getContextRules 方法从 LoggerContext 中获取规则表，从而实现脱敏功能。
+ * 例：DesensitizeMdcJsonProvider.registerRule(MdcKeys.TRACE_ID,new SliderDesensitizeRule(2, 2, '*')::apply);
  *
  * @author travis
  */

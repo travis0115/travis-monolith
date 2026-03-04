@@ -5,6 +5,9 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 方法句柄缓存
+ */
 public final class DesensitizeMethodHandleCache {
 
     /**

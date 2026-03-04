@@ -58,11 +58,17 @@ public class RequestIdFilter extends OncePerRequestFilter {
         // 禁止执行完毕后添加代码
     }
 
+    /**
+     * 是否允许在发生错误时过滤请求
+     */
     @Override
     protected boolean shouldNotFilterErrorDispatch() {
         return false;
     }
 
+    /**
+     * 是否允许在异步处理时过滤请求
+     */
     @Override
     protected boolean shouldNotFilterAsyncDispatch() {
         return false;

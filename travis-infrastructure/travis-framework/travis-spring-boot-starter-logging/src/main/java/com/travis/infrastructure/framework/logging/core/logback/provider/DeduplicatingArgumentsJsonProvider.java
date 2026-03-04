@@ -8,7 +8,7 @@ import tools.jackson.core.JsonGenerator;
 /**
  * 替代 logstash-logback-encoder 默认的 {@code <arguments/>} provider。
  * 被 message 中占位符 {@code {}} 消费掉的参数不再在 arguments 中重复输出，避免同一内容在 message 与 arguments 中重复。
- * 参数值的脱敏由 Jackson 的 DesensitizeJacksonModule 或调用方传入的已脱敏值负责，本类不参与脱敏。
+ * 参数值的脱敏由 Jackson 的 DesensitizeJacksonModule 或调用方传入的已脱敏值负责，该类不参与脱敏。
  */
 public class DeduplicatingArgumentsJsonProvider extends ArgumentsJsonProvider {
 

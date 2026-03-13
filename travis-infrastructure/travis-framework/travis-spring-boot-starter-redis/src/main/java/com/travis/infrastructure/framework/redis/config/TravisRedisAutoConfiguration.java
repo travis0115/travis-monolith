@@ -2,6 +2,7 @@ package com.travis.infrastructure.framework.redis.config;
 
 import com.travis.infrastructure.framework.jackson.config.TravisJacksonAutoConfiguration;
 import com.travis.infrastructure.framework.jackson.core.validator.LaissezFaireSubTypeValidator;
+import com.travis.infrastructure.framework.redis.core.util.RedisUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -61,6 +62,17 @@ public class TravisRedisAutoConfiguration {
         template.setHashValueSerializer(jsonRedisSerializer);
         template.afterPropertiesSet();
         return template;
+    }
+
+    /**
+     * 创建 RedisUtils Bean，注入redisTemplate
+     *
+     */
+    @Bean
+    public RedisUtils redisUtils(RedisTemplate<String, Object> redisTemplate) {
+        var utils = new RedisUtils();
+        utils.setRedisTemplate(redisTemplate);
+        return utils;
     }
 
 }

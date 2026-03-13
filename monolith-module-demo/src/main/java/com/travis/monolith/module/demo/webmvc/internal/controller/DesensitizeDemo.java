@@ -7,6 +7,9 @@ import com.travis.infrastructure.framework.desensitize.core.annotation.regex.Ema
 import com.travis.infrastructure.framework.desensitize.core.annotation.slider.*;
 import lombok.Data;
 
+/**
+ * 脱敏测试类
+ */
 @Data
 public class DesensitizeDemo {
     @ChineseNameDesensitize

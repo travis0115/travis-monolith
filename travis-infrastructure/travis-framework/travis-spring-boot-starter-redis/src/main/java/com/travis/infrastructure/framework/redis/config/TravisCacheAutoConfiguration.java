@@ -20,7 +20,7 @@ import java.util.Objects;
  *
  * @author travis
  */
-@AutoConfiguration
+@AutoConfiguration(after = TravisRedisAutoConfiguration.class)
 @EnableCaching
 @EnableConfigurationProperties({CacheProperties.class})
 public class TravisCacheAutoConfiguration {

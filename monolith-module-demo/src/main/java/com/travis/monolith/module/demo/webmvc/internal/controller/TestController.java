@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+
 @RestController
 @Slf4j
 public class TestController {
@@ -35,6 +36,7 @@ public class TestController {
         desensitizeDemo.setEmail("travis0115@163.com");
         desensitizeDemo.setRegex("你好，我是芋道源码");
         desensitizeDemo.setOrigin("芋道源码");
+
 
         log.error("message", kv("demo", desensitizeDemo));
         return ApiResponse.success(desensitizeDemo);

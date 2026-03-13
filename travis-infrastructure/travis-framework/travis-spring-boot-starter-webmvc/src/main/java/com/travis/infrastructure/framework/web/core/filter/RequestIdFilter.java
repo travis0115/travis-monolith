@@ -75,32 +75,35 @@ public class RequestIdFilter extends OncePerRequestFilter {
     }
 
     /**
-     * requestId 生成器
-     * 采用Base36算法生成，短ID
+     * requestId 生成器，Base36 短 ID。
+     * 布局（64 bit）：高 42 位时间（毫秒，截断防溢出），中 12 位同毫秒序号，低 20 位随机数。
      */
     private static final class RequestIdGenerator {
+
         private static final AtomicInteger SEQ = new AtomicInteger();
-        private static final Object LOCK = new Object();
-        private static long lastTime = -1L;
+        private static volatile long lastTime = -1L;
+
+        private static final long TIME_MASK = (1L << 42) - 1;
 
         public static String nextId() {
             long now = System.currentTimeMillis();
             int seq;
-            synchronized (LOCK) {
-                if (now == lastTime) {
+            if (now == lastTime) {
+                seq = SEQ.incrementAndGet() & 0xFFF;
+            } else {
+                synchronized (RequestIdGenerator.class) {
+                    if (now != lastTime) {
+                        SEQ.set(0);
+                        lastTime = now;
+                    }
                     seq = SEQ.incrementAndGet() & 0xFFF;
-                } else {
-                    lastTime = now;
-                    SEQ.set(0);
-                    seq = 0;
                 }
             }
             int rand = ThreadLocalRandom.current().nextInt(1 << 20);
-            long value =
-                    (now << 42)
-                            | ((long) seq << 20)
-                            | rand;
+            long time42 = now & TIME_MASK;
+            long value = (time42 << 22) | ((long) seq << 20) | rand;
             return Long.toUnsignedString(value, 36);
         }
     }
+
 }

@@ -33,6 +33,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -751,8 +752,10 @@ public class ServletUtils {
         if (content.length == 0) {
             return null;
         }
-        var encoding = wrapper.getCharacterEncoding();
-        var body = new String(content, Charset.forName(encoding));
+        var charset = StrUtil.isNotEmpty(wrapper.getCharacterEncoding())
+                ? Charset.forName(wrapper.getCharacterEncoding())
+                : StandardCharsets.UTF_8;
+        var body = new String(content, charset);
         // 去除前端传入的格式化空白（换行、缩进），压缩为单行 JSON
         return JsonUtils.compactJson(body);
     }

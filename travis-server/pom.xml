@@ -10,16 +10,16 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>monolith-server</artifactId>
+    <artifactId>travis-server</artifactId>
     <description>
-        项目启动模块，引入需要的模块 monolith-module-xxx 即可开启对应模块。
+        项目启动模块，引入需要的模块 travis-module-xxx 即可开启对应模块。
     </description>
 
     <dependencies>
         <!-- 启动模块 -->
         <dependency>
             <groupId>com.travis</groupId>
-            <artifactId>monolith-module-demo</artifactId>
+            <artifactId>travis-module-demo</artifactId>
         </dependency>
 
         <!-- spring 过时配置检测 -->

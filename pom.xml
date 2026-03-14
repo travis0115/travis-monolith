@@ -21,9 +21,9 @@
 
     <modules>
         <module>travis-infrastructure</module>
-        <module>monolith-dependencies</module>
-        <module>monolith-module-demo</module>
-        <module>monolith-server</module>
+        <module>travis-module-dependencies</module>
+        <module>travis-module-demo</module>
+        <module>travis-server</module>
     </modules>
 
     <properties>
@@ -44,7 +44,7 @@
             <!-- 项目依赖 -->
             <dependency>
                 <groupId>com.travis</groupId>
-                <artifactId>monolith-dependencies</artifactId>
+                <artifactId>travis-module-dependencies</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>

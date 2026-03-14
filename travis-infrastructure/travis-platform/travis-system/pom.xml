@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.travis</groupId>
+        <artifactId>travis-platform</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>travis-system</artifactId>
+
+    <description>
+        通用业务，支撑上层的核心业务
+        例如：用户、部门、权限、数据字典等
+    </description>
+
+</project>

@@ -17,6 +17,7 @@
         <module>travis-dependencies</module>
         <module>travis-common</module>
         <module>travis-framework</module>
+        <module>travis-platform</module>
     </modules>
 
     <properties>

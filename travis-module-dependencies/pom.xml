@@ -4,11 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.travis</groupId>
-    <artifactId>monolith-dependencies</artifactId>
+    <artifactId>travis-module-dependencies</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <description>基础依赖 bom 文件，管理项目业务模块的依赖版本</description>
+    <description>
+        基础依赖 bom 文件
+        管理业务模块的依赖版本
+    </description>
 
     <properties>
         <!-- 项目版本 -->
@@ -20,7 +23,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.travis</groupId>
-                <artifactId>monolith-module-demo</artifactId>
+                <artifactId>travis-module-demo</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

@@ -39,10 +39,10 @@
 
 | 项目                    | 说明              |
 |-----------------------|-----------------|
-| `monolith-dependencies`  | Maven 依赖版本管理    |
-| `monolith-framework`     | 框架整合扩展          |
-| `monolith-server`        | 启动模块            |
-| `monolith-module-system` | 系统功能的 Module 模块 |
+| `travis-dependencies`  | Maven 依赖版本管理    |
+| `travis-framework`     | 框架整合扩展          |
+| `travis-server`        | 启动模块            |
+| `travis-module-system` | 系统功能的 Module 模块 |
 //TODO
 
 ### 框架
